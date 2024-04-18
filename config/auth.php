@@ -14,8 +14,10 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'web'),
-        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+        'guard' => 'web', 
+        'passwords' => 'users', 
+        // 'guard' => env('AUTH_DEFAULT_GUARD',  'customer'), 
+        // 'passwords' => env('AUTH_DEFAULT_PASSWORD_BROKER', 'customer'), 
     ],
 
     /*
@@ -36,11 +38,17 @@ return [
     */
 
     'guards' => [
-        'web' => [
+        'pegawai' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'pegawai',
         ],
+        'customer' => [
+            'driver' => 'session',
+            'provider' => 'customer',
+        ],
+    
     ],
+    
 
     /*
     |--------------------------------------------------------------------------
@@ -60,16 +68,17 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'pegawai' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\Pegawai::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+    
+        'customer' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Customer::class,
+        ],
     ],
+    
 
     /*
     |--------------------------------------------------------------------------
@@ -109,7 +118,5 @@ return [
     | confirmation screen. By default, the timeout lasts for three hours.
     |
     */
-
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
-
 ];

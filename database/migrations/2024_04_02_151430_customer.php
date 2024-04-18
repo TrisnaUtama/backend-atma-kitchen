@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_saldo')->constrained('saldo')->onDelete('cascade');
             $table->string('nama');
-            $table->string('username');
             $table->string('password');
             $table->string('email')->unique();
             $table->string('no_telpn');
