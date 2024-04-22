@@ -13,7 +13,19 @@ Route::middleware(['auth:sanctum','admin'])->prefix('produk')->group(function(){
     Route::patch('/{id}', 'App\Http\Controllers\ProdukController@updateProduct');
     Route::delete('/{id}', 'App\Http\Controllers\ProdukController@deleteProductById');
     Route::get('/getById', 'App\Http\Controllers\ProdukController@getProductById');
+
+    #routeBahanBaku
+    
 });
+
+Route::middleware(['auth:sanctum','admin'])->prefix('bahanbaku')->group(function(){
+    Route::get('/getAllBahanBaku', 'App\Http\Controllers\BahanBakuController@getAllBahanBaku');
+    Route::post('/add', 'App\Http\Controllers\BahanBakuController@addBahanBaku');
+    Route::patch('/{id}', 'App\Http\Controllers\BahanBakuController@updateBahanBaku');
+    Route::delete('/{id}', 'App\Http\Controllers\BahanBakuController@deleteBahanBakuById');
+    Route::get('/getBahanById', 'App\Http\Controllers\BahanBakuController@getBahanBakuById');
+});
+
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('register', 'App\Http\Controllers\AuthController@register');
