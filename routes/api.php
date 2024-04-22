@@ -13,17 +13,25 @@ Route::middleware(['auth:sanctum','admin'])->prefix('produk')->group(function(){
     Route::patch('/{id}', 'App\Http\Controllers\ProdukController@updateProduct');
     Route::delete('/{id}', 'App\Http\Controllers\ProdukController@deleteProductById');
     Route::get('/getById', 'App\Http\Controllers\ProdukController@getProductById');
-
-    #routeBahanBaku
-    
 });
 
+#routeBahanBaku
 Route::middleware(['auth:sanctum','admin'])->prefix('bahanbaku')->group(function(){
     Route::get('/getAllBahanBaku', 'App\Http\Controllers\BahanBakuController@getAllBahanBaku');
     Route::post('/add', 'App\Http\Controllers\BahanBakuController@addBahanBaku');
     Route::patch('/{id}', 'App\Http\Controllers\BahanBakuController@updateBahanBaku');
     Route::delete('/{id}', 'App\Http\Controllers\BahanBakuController@deleteBahanBakuById');
     Route::get('/getBahanById', 'App\Http\Controllers\BahanBakuController@getBahanBakuById');
+});
+
+
+#route Penitip
+Route::middleware(['auth:sanctum','mo'])->prefix('penitip')->group(function(){
+    Route::get('/getAllPenitip', 'App\Http\Controllers\PenitipController@getAllPenitip');
+    Route::post('/addPenitip', 'App\Http\Controllers\PenitipController@addPenitip');
+    Route::patch('/{id}', 'App\Http\Controllers\PenitipController@updatePenitip');
+    Route::delete('/{id}', 'App\Http\Controllers\PenitipController@deletePenitipById');
+    Route::get('/getPenitipById', 'App\Http\Controllers\PenitipController@getPenitipById');
 });
 
 
