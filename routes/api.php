@@ -22,6 +22,16 @@ Route::middleware(['auth:sanctum','admin'])->prefix('resep')->group(function() {
     Route::delete('/{id}', 'App\Http\Controllers\ResepController@deleteResepById');
 });
 
+#route pegawai
+Route::middleware(['auth:sanctum', 'mo'])->prefix('pegawai')->group(function () {
+    Route::get('/getAll', 'App\Http\Controllers\PegawaiController@tampilkanPegawai');
+    Route::post('/add', 'App\Http\Controllers\PegawaiController@tambahPegawai');
+    Route::patch('/{id}', 'App\Http\Controllers\PegawaiController@ubahPegawai');
+    Route::delete('/{id}', 'App\Http\Controllers\PegawaiController@hapusPegawai');
+    Route::get('/search/{id}', 'App\Http\Controllers\PegawaiController@cariPegawai');
+});
+
+
 #routeBahanBaku
 Route::middleware(['auth:sanctum','admin'])->prefix('bahanbaku')->group(function(){
     Route::get('/getAllBahanBaku', 'App\Http\Controllers\BahanBakuController@getAllBahanBaku');
