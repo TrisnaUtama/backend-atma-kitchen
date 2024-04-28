@@ -15,6 +15,13 @@ Route::middleware(['auth:sanctum','admin'])->prefix('produk')->group(function(){
     Route::get('/getById', 'App\Http\Controllers\ProdukController@getProductById');
 });
 
+Route::middleware(['auth:sanctum','admin'])->prefix('resep')->group(function() {
+    Route::get('/getAll', 'App\Http\Controllers\ResepController@getAllResep');
+    Route::post('/', 'App\Http\Controllers\ResepController@addResep');
+    Route::patch('/{id}', 'App\Http\Controllers\ResepController@updateResep');
+    Route::delete('/{id}', 'App\Http\Controllers\ResepController@deleteResepById');
+});
+
 Route::group(['prefix' => 'auth'], function () {
     Route::post('register', 'App\Http\Controllers\AuthController@register');
     Route::post('registerPegawai', 'App\Http\Controllers\PegawaiController@registerPegawai');
