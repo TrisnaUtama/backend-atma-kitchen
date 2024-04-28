@@ -18,7 +18,7 @@ class ProdukController extends Controller
                     'message' => 'products is empty',
                     'data' => $products,
                 ], 401);
-            
+
             return response()->json([
                 'status' => true,
                 'message' => 'success retreive all data products',
@@ -30,7 +30,7 @@ class ProdukController extends Controller
                 'status' => false,
                 'message' => $e->getMessage(),
             ], 500);
-        } 
+        }
     }
 
     public function addingProduct(Request $request)
@@ -87,17 +87,17 @@ class ProdukController extends Controller
                 return response([
                     'message' => 'Product not found',
                     'data' => null,
-                ], 404); 
+                ], 404);
             }
             $updateData = $request->all();
-    
+
             $product->update($updateData);
-    
+
             return response([
                 'message' => 'Success update product',
                 'data' => $product,
             ], 200);
-    
+
         } catch(Exception $e) {
             return response()->json([
                 'status' => false,
@@ -105,7 +105,7 @@ class ProdukController extends Controller
             ], 500);
         }
     }
-    
+
     public function deleteProductById( string $id)
     {
         try{
@@ -116,7 +116,7 @@ class ProdukController extends Controller
                     'message' => 'Product not found',
                     'data' => null,
                 ], 404);
-                
+
             if($product->delete())
                 return response([
                     'message' => 'delete product success',
@@ -139,7 +139,7 @@ class ProdukController extends Controller
                     'status' => false,
                     'message' => 'Product name parameter is empty',
                     'data' => null,
-                ], 400); 
+                ], 400);
             }
             $product = Produk::where('nama_produk', 'like', "%$productName%")->first();
             if(!$product)
@@ -148,13 +148,13 @@ class ProdukController extends Controller
                     'message' => 'Product not found',
                     'data' => null,
                 ], 404);
-            
+
             return response()->json([
                 'status' => true,
                 'message' => 'Success retrieve product: ' . $product->nama_produk,
                 'data' => $product
             ], 200);
-            
+
         }catch(Exception $e){
             return response()->json([
                 'status' => false,
@@ -162,5 +162,5 @@ class ProdukController extends Controller
             ], 500);
         }
     }
-    
+
 }

@@ -15,6 +15,13 @@ Route::middleware(['auth:sanctum','admin'])->prefix('produk')->group(function(){
     Route::get('/getById', 'App\Http\Controllers\ProdukController@getProductById');
 });
 
+Route::middleware(['auth:sanctum','admin'])->prefix('resep')->group(function() {
+    Route::get('/getAll', 'App\Http\Controllers\ResepController@getAllResep');
+    Route::post('/', 'App\Http\Controllers\ResepController@addResep');
+    Route::patch('/{id}', 'App\Http\Controllers\ResepController@updateResep');
+    Route::delete('/{id}', 'App\Http\Controllers\ResepController@deleteResepById');
+});
+
 #routeBahanBaku
 Route::middleware(['auth:sanctum','admin'])->prefix('bahanbaku')->group(function(){
     Route::get('/getAllBahanBaku', 'App\Http\Controllers\BahanBakuController@getAllBahanBaku');
@@ -33,6 +40,7 @@ Route::middleware(['auth:sanctum','mo'])->prefix('penitip')->group(function(){
     Route::delete('/{id}', 'App\Http\Controllers\PenitipController@deletePenitipById');
     Route::get('/getPenitipById', 'App\Http\Controllers\PenitipController@getPenitipById');
 });
+
 
 
 Route::group(['prefix' => 'auth'], function () {
