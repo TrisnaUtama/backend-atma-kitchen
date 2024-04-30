@@ -63,7 +63,7 @@ class AuthController extends Controller
 
         return response()->json(['error' => 'Invalid credentials'], 401);
     }
-    
+
     protected function respondWithToken($token, $credentials){
         return response()->json([
             'status' => 'success',
@@ -73,15 +73,15 @@ class AuthController extends Controller
             'expiration' => 525600,
         ], 200);
     }
-        
-    
+
+
     public function logout(){
         $removeToken = Auth::user();
-    
-        if($removeToken) 
+
+        if($removeToken)
             $removeToken->currentAccessToken()->delete();
             return response()->json(['success' => true, 'message' => 'Successfully logged out', 'data' => $removeToken]);
-        
+
         return response()->json(['success' => false, 'message' => 'no token provided', 'data' => $removeToken]);
     }
 }
