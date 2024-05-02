@@ -121,8 +121,22 @@ class PenitipController extends Controller
 
     public function getPenitipById(string $id){
         try{
+<<<<<<< HEAD
             $penitipName = Penitip::find($id);
             if(!$penitipName) {
+=======
+            $penitipName = $request->all();
+            dd($penitipName);
+            if(is_null($penitipName)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Penitip name parameter is empty',
+                    'data' => null,
+                ], 400); 
+            }
+            $penitip = Penitip ::where('nama', 'like', "%$penitipName%")->first();
+            if(!$penitip)
+>>>>>>> 95435f646f4981a44efab3bf361a5394ec52f391
                 return response()->json([
                     'status' => false,
                     'message' => 'Penitip not found',
