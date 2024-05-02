@@ -123,7 +123,7 @@ class PenitipController extends Controller
         try{
             $penitipName = $request->all();
             dd($penitipName);
-            if(is_null($productName)) {
+            if(is_null($penitipName)) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Penitip name parameter is empty',
