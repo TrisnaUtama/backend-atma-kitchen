@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -30,6 +32,13 @@ Route::middleware(['auth:sanctum', 'mo'])->prefix('pegawai')->group(function () 
     Route::delete('/{id}', 'App\Http\Controllers\PegawaiController@hapusPegawai');
     Route::get('/search/{id}', 'App\Http\Controllers\PegawaiController@cariPegawai');
 });
+
+#routeGantiPassword
+
+Route::post('/lupaPassword/create',[UserController::class,'creatToken' ]);
+Route::get('/active/{token}',[UserController::class,'activeToken' ]);
+Route::post('reset/{token}',[UserController::class,'resetPass']);
+Route::get('validate/{token}',[UserController::class,'validateToken']);
 
 
 #routeBahanBaku
