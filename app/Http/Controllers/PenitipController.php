@@ -94,7 +94,7 @@ class PenitipController extends Controller
         }
     }
 
-    public function deletePenitipById( string $id)
+    public function deletePenitipById(string $id)
     {
         try{
             $penitip = Penitip::find($id);
@@ -119,29 +119,21 @@ class PenitipController extends Controller
         }
     }
 
-    public function getPenitipById(Request $request){
+    public function getPenitipById(string $id){
         try{
-            $penitipName = $request->all();
-            dd($penitipName);
-            if(is_null($productName)) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Penitip name parameter is empty',
-                    'data' => null,
-                ], 400); 
-            }
-            $penitip = Penitip ::where('nama', 'like', "%$penitipName%")->first();
-            if(!$penitip)
+            $penitipName = Penitip::find($id);
+            if(!$penitipName) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Penitip not found',
                     'data' => null,
-                ], 404);
-            
+                ], 400); 
+            }
+
             return response()->json([
                 'status' => true,
-                'message' => 'Success retrieve penitip: ' . $penitip->nama,
-                'data' => $penitip
+                'message' => 'Success retrieve penitip: ' . $penitipName->nama,
+                'data' => $penitipName
             ], 200);
             
         }catch(Exception $e){

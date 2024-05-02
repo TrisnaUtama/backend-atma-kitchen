@@ -9,10 +9,10 @@ Route::get('/user', function (Request $request) {
 
 Route::middleware(['auth:sanctum','admin'])->prefix('produk')->group(function(){
     Route::get('/getAll', 'App\Http\Controllers\ProdukController@getAllProduk');
-    Route::post('/', 'App\Http\Controllers\ProdukController@addingProduct');
+    Route::post('/addProduk', 'App\Http\Controllers\ProdukController@addingProduct');
     Route::patch('/{id}', 'App\Http\Controllers\ProdukController@updateProduct');
     Route::delete('/{id}', 'App\Http\Controllers\ProdukController@deleteProductById');
-    Route::get('/getById', 'App\Http\Controllers\ProdukController@getProductById');
+    Route::get('/{id}', 'App\Http\Controllers\ProdukController@getProductById');
 });
 
 Route::middleware(['auth:sanctum','admin'])->prefix('resep')->group(function() {
@@ -41,6 +41,13 @@ Route::middleware(['auth:sanctum','admin'])->prefix('bahanbaku')->group(function
     Route::get('/getBahanById', 'App\Http\Controllers\BahanBakuController@getBahanBakuById');
 });
 
+Route::middleware(['auth:sanctum','admin'])->prefix('limit')->group(function(){
+    Route::get('/getAll', 'App\Http\Controllers\Limit_ProdukController@getLimitAllProduk');
+    Route::post('/add', 'App\Http\Controllers\Limit_ProdukController@addLimitProduk');
+    Route::patch('/{id}', 'App\Http\Controllers\Limit_ProdukController@editLimitProduk');
+    Route::delete('/{id}', 'App\Http\Controllers\Limit_ProdukController@deleteLimitProduk');
+});
+
 
 #route Penitip
 Route::middleware(['auth:sanctum','mo'])->prefix('penitip')->group(function(){
@@ -49,6 +56,11 @@ Route::middleware(['auth:sanctum','mo'])->prefix('penitip')->group(function(){
     Route::patch('/{id}', 'App\Http\Controllers\PenitipController@updatePenitip');
     Route::delete('/{id}', 'App\Http\Controllers\PenitipController@deletePenitipById');
     Route::get('/getPenitipById', 'App\Http\Controllers\PenitipController@getPenitipById');
+});
+
+Route::middleware(['auth:sanctum','admin'])->prefix('penitipAdmin')->group(function(){
+    Route::get('/getAllPenitip', 'App\Http\Controllers\PenitipController@getAllPenitip');
+    Route::get('/{id}', 'App\Http\Controllers\PenitipController@getPenitipById');
 });
 
 
