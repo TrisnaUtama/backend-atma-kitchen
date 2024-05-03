@@ -70,6 +70,7 @@ class ProdukController extends Controller
             $productsData['kategori'] = $request->kategori;
             $productsData['stok'] = $request->stok;
             $productsData['harga'] = $request->harga;
+            $productsData['status'] = 1;
             $productsData['tanggal_penitipan'] = $request->tanggal;
             $today = Carbon::today();
 

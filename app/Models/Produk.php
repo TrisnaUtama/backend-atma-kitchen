@@ -22,6 +22,7 @@ class Produk extends Model
         'kategori',
         'harga',
         'stok',
+        'status',
     ];
 
     public function penitip(){

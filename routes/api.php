@@ -19,6 +19,21 @@ Route::middleware(['auth:sanctum','admin'])->prefix('produk')->group(function(){
     Route::get('/{id}', 'App\Http\Controllers\ProdukController@getProductById');
 });
 
+#routeHampers
+Route::middleware(['auth:sanctum','admin'])->prefix('hampers')->group(function(){
+    Route::get('/getAll', 'App\Http\Controllers\HampersController@getAllHampers');
+    Route::post('/add', 'App\Http\Controllers\HampersController@addHampers');
+    Route::patch('/{id}', 'App\Http\Controllers\HampersController@updateHampers');
+    Route::delete('/{id}', 'App\Http\Controllers\HampersController@deleteHampersById');
+});
+
+Route::middleware(['auth:sanctum','admin'])->prefix('detail_hampers')->group(function(){
+    Route::get('/getAll', 'App\Http\Controllers\DetailHampersController@getAllDetail');
+    Route::post('/add', 'App\Http\Controllers\DetailHampersController@addDetail');
+    Route::patch('/{id}', 'App\Http\Controllers\DetailHampersController@updateDetail');
+    Route::delete('/{id}', 'App\Http\Controllers\DetailHampersController@deleteDetail');
+});
+
 #routeResep
 Route::middleware(['auth:sanctum','admin'])->prefix('resep')->group(function() {
     Route::get('/getAll', 'App\Http\Controllers\ResepController@getAllResep');
