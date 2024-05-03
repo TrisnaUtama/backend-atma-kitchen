@@ -77,7 +77,7 @@ Route::middleware(['auth:sanctum','mo'])->prefix('penitip')->group(function(){
     Route::post('/addPenitip', 'App\Http\Controllers\PenitipController@addPenitip');
     Route::patch('/{id}', 'App\Http\Controllers\PenitipController@updatePenitip');
     Route::delete('/{id}', 'App\Http\Controllers\PenitipController@deletePenitipById');
-    Route::get('/getPenitipById', 'App\Http\Controllers\PenitipController@getPenitipById');
+    Route::get('/{id}', 'App\Http\Controllers\PenitipController@getPenitipById');
 });
 
 #routePenitipAdmin
