@@ -58,7 +58,7 @@ Route::middleware(['auth:sanctum','admin'])->prefix('bahanbaku')->group(function
     Route::post('/add', 'App\Http\Controllers\BahanBakuController@addBahanBaku');
     Route::patch('/{id}', 'App\Http\Controllers\BahanBakuController@updateBahanBaku');
     Route::delete('/{id}', 'App\Http\Controllers\BahanBakuController@deleteBahanBakuById');
-    Route::get('/getBahanById', 'App\Http\Controllers\BahanBakuController@getBahanBakuById');
+    Route::get('/{id}', 'App\Http\Controllers\BahanBakuController@getBahanBakuById');
 });
 
 

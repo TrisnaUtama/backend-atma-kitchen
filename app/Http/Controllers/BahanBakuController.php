@@ -125,18 +125,9 @@ class BahanBakuController extends Controller
         }
     }
 
-    public function getBahanBakuById(Request $request){
+    public function getBahanBakuById(String $id){
         try{
-            $BahanbakuName = $request->all();
-            dd($BahanbakuName);
-            if(is_null($productName)) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Bahan Baku name parameter is empty',
-                    'data' => null,
-                ], 400); 
-            }
-            $bakan_bakus = BahanBaku::where('nama_bahan_baku', 'like', "%$BahanbakuName%")->first();
+            $bahan_bakus = BahanBaku::find($id);
             if(!$bahan_bakus)
                 return response()->json([
                     'status' => false,
