@@ -18,7 +18,7 @@ class AuthenticateMO
     {
         $user = Auth::user();
         // dd($user);
-        if ($user->id_role != 2) {
+        if ($user->id_role != 3) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         return $next($request);
