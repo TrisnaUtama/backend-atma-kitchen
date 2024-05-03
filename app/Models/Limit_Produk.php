@@ -15,7 +15,7 @@ class Limit_Produk extends Model
     protected $fillable = [
         'id_produk',
         'limit',
-        'tanggal',
+        'tanggal_limit',
     ];
 
     public function produk(){

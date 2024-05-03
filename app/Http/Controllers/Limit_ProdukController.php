@@ -67,7 +67,7 @@ class Limit_ProdukController extends Controller
     public function editLimitProduk(Request $request,string $id){
         try{
             $specificLimit = Limit_Produk::where('id_produk', $id)->first();
-            $limitData;
+            $limitData = [];
             if(!$specificLimit){
                 return response([
                     'message' => 'Produk Limit not found',

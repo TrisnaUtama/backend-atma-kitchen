@@ -34,7 +34,6 @@ Route::middleware(['auth:sanctum', 'mo'])->prefix('pegawai')->group(function () 
 });
 
 #routeGantiPassword
-
 Route::post('/lupaPassword/create',[UserController::class,'creatToken' ]);
 Route::get('/active/{token}',[UserController::class,'activeToken' ]);
 Route::post('reset/{token}',[UserController::class,'resetPass']);
@@ -71,8 +70,6 @@ Route::middleware(['auth:sanctum','admin'])->prefix('penitipAdmin')->group(funct
     Route::get('/getAllPenitip', 'App\Http\Controllers\PenitipController@getAllPenitip');
     Route::get('/{id}', 'App\Http\Controllers\PenitipController@getPenitipById');
 });
-
-
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('register', 'App\Http\Controllers\AuthController@register');

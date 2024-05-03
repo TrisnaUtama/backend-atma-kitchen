@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produk;
+use App\Models\Limit_Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+
 
 class ProdukController extends Controller
 {
@@ -61,14 +64,22 @@ class ProdukController extends Controller
             }
 
             $productsData['id_penitip'] = $request->id_penitip;
+            $productsData['id_resep'] = $request->id_resep;
             $productsData['nama_produk'] = $request->nama_produk;
             $productsData['deskripsi'] = $request->deskripsi;
             $productsData['kategori'] = $request->kategori;
             $productsData['stok'] = $request->stok;
             $productsData['harga'] = $request->harga;
             $productsData['tanggal_penitipan'] = $request->tanggal;
+            $today = Carbon::today();
 
             $product = Produk::create($productsData);
+            $limit_produk = Limit_Produk::create([
+                'id_produk' => $product->id,
+                'limit' => 0,
+                'tanggal_limit' => $today,
+            ]);
+
             return response()->json([
                 'status' => true,
                 'message' => 'Success adding data products',
@@ -85,47 +96,74 @@ class ProdukController extends Controller
 
 
     public function updateProduct(Request $request, string $id)
-    {
-        try {
-            $product = Produk::find($id);
-            $productsData;
-            if(is_null($product)){
-                return response([
-                    'message' => 'Product not found',
-                    'data' => null,
-                ], 404);
-            }
-
-            if ($request->hasFile('gambar')) {
-                $uploadFolder = 'produk';
-                $image = $request->file('gambar');
-                $fileName = $request->nama_produk . '.' . $image->getClientOriginalExtension();
-                $image_uploaded_path = $image->storeAs($uploadFolder, $fileName, 'public');
-                $productsData['gambar'] = $fileName;
-            }
-
-            $productsData['id_penitip'] = $request->id_penitip;
-            $productsData['nama_produk'] = $request->nama_produk;
-            $productsData['deskripsi'] = $request->deskripsi;
-            $productsData['kategori'] = $request->kategori;
-            $productsData['stok'] = $request->stok;
-            $productsData['harga'] = $request->harga;
-            $productsData['tanggal_penitipan'] = $request->tanggal;
-
-            $product->update($productsData);
-
+{
+    try {
+        $product = Produk::find($id);
+        
+        if(is_null($product)){
             return response([
-                'message' => 'Success update product',
-                'data' => $product,
-            ], 200);
-
-        } catch(Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage(),
-            ], 500);
+                'message' => 'Product not found',
+                'data' => null,
+            ], 404);
         }
+
+        $productsData = [];
+
+        if ($request->has('id_penitip')) {
+            $productsData['id_penitip'] = $request->id_penitip;
+        }
+
+        if ($request->has('id_resep')) {
+            $productsData['id_resep'] = $request->id_resep;
+        }
+
+        if ($request->has('nama_produk')) {
+            $productsData['nama_produk'] = $request->nama_produk;
+        }
+
+        if ($request->has('deskripsi')) {
+            $productsData['deskripsi'] = $request->deskripsi;
+        }
+
+        if ($request->has('kategori')) {
+            $productsData['kategori'] = $request->kategori;
+        }
+
+        if ($request->has('stok')) {
+            $productsData['stok'] = $request->stok;
+        }
+
+        if ($request->has('harga')) {
+            $productsData['harga'] = $request->harga;
+        }
+
+        if ($request->has('tanggal')) {
+            $productsData['tanggal_penitipan'] = $request->tanggal;
+        }
+
+        if ($request->hasFile('gambar')) {
+            $uploadFolder = 'produk';
+            $image = $request->file('gambar');
+            $fileName = $request->nama_produk . '.' . $image->getClientOriginalExtension();
+            $image_uploaded_path = $image->storeAs($uploadFolder, $fileName, 'public');
+            $productsData['gambar'] = $fileName;
+        }
+
+        $product->update($productsData);
+
+        return response([
+            'message' => 'Success update product',
+            'data' => $product,
+        ], 200);
+
+    } catch(Exception $e) {
+        return response()->json([
+            'status' => false,
+            'message' => $e->getMessage(),
+        ], 500);
     }
+}
+
 
     public function deleteProductById(string $id)
     {
