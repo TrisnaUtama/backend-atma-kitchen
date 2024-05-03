@@ -68,8 +68,13 @@ class ProdukController extends Controller
             $productsData['nama_produk'] = $request->nama_produk;
             $productsData['deskripsi'] = $request->deskripsi;
             $productsData['kategori'] = $request->kategori;
-            $productsData['stok'] = $request->stok;
+            if($request->has('stok')){
+                $productsData['stok'] = $request->stok;
+            }else{
+                $productsData['stok'] = 0;
+            }
             $productsData['harga'] = $request->harga;
+            $productsData['status'] = 1;
             $productsData['tanggal_penitipan'] = $request->tanggal;
             $today = Carbon::today();
 
@@ -127,6 +132,11 @@ class ProdukController extends Controller
 
         if ($request->has('kategori')) {
             $productsData['kategori'] = $request->kategori;
+        }
+
+        if($request['kategori'] != "Titipan"){
+            $productsData['id_penitip'] = null;
+            $productsData['tanggal_penitipan']  = null;
         }
 
         if ($request->has('stok')) {
