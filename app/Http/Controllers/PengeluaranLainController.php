@@ -116,4 +116,28 @@ class PengeluaranLainController extends Controller
             ], 500);
         }
     }
+
+    public function getPengeluaranById(String $id){
+        try{
+            $pengeluaran = PengeluaranLain::find($id);
+            if(!$pengeluaran)
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Pengeluaran not found',
+                    'data' => null,
+                ], 404);
+            
+            return response()->json([
+                'status' => true,
+                'message' => 'Success retrieve pengeluaran: ' . $pengeluaran->nama_pengeluaran,
+                'data' => $pengeluaran
+            ], 200);
+            
+        }catch(Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
