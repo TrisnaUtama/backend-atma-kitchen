@@ -62,8 +62,9 @@ Route::get('validate/{token}',[UserController::class,'validateToken']);
 Route::middleware(['auth:sanctum', 'mo'])->prefix('pengeluaranLain')->group(function () {
     Route::get('/getAll', 'App\Http\Controllers\PengeluaranLainController@getAllPengeluaran');
     Route::post('/add', 'App\Http\Controllers\PengeluaranLainController@addPengeluaran');
-    Route::patch('/update/{id}', 'App\Http\Controllers\PengeluaranLainController@updatePengeluaran');
-    Route::delete('delete/{id}', 'App\Http\Controllers\PengeluaranLainController@deletePengeluaran');
+    Route::patch('/{id}', 'App\Http\Controllers\PengeluaranLainController@updatePengeluaran');
+    Route::delete('/{id}', 'App\Http\Controllers\PengeluaranLainController@deletePengeluaran');
+    Route::get('/{id}', 'App\Http\Controllers\PengeluaranLainController@getPengeluaranById');
 });
 
 
