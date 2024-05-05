@@ -34,6 +34,30 @@ class HampersController extends Controller
         }
     }
 
+    public function getSpecificHampers(string $id){
+        try{
+            $hampers = Hampers::find($id);
+            if($hampers->isEmpty()){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No hampers founded',
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Successfully retrieved hampers ',
+                'data' => $hampers
+            ], 200);
+
+        }catch(Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 500);    
+        }
+    }
+
     public function addHampers(Request $request){
         try{
             $hampersData = $request->all();
@@ -119,8 +143,6 @@ class HampersController extends Controller
             $hampersData['gambar'] = $fileName;
         }
 
-        $hampers->update($hampersData);
-
         if ($request->has('id_bahan_baku') && $request->has('id_produk')) {
             $hampers->detailHampers()->delete();
             
@@ -138,6 +160,7 @@ class HampersController extends Controller
                 $detailData->save();
             }
         }
+        $hampers->detailHampers()->delete();
 
         return response()->json([
             'message' => 'Success update product',

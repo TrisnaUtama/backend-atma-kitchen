@@ -25,6 +25,7 @@ Route::middleware(['auth:sanctum','admin'])->prefix('hampers')->group(function()
     Route::post('/add', 'App\Http\Controllers\HampersController@addHampers');
     Route::patch('/{id}', 'App\Http\Controllers\HampersController@updateHampers');
     Route::delete('/{id}', 'App\Http\Controllers\HampersController@deleteHampersById');
+    Route::get('/{id}', 'App\Http\Controllers\HampersController@getSpecificHampers');
 });
 
 Route::middleware(['auth:sanctum','admin'])->prefix('detail_hampers')->group(function(){
