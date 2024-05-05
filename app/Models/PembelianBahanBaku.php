@@ -5,22 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Hampers extends Model
+class PembelianBahanBaku extends Model
 {
     use HasFactory;
-
     public $timestamps = false;
-    protected $table = 'hampers'; 
+    protected $table = 'pembelian_bahan_baku'; 
     protected $primaryKey = 'id'; 
     protected $fillable = [
-        'gambar',
+        'id_bahan_baku',
         'harga',
-        'deskripsi',
-        'nama_hampers',
+        'jumlah',
+        'nama',
     ];
 
-    public function detailHampers()
-    {
-        return $this->hasMany(Detail_Hampers::class, 'id_hampers');
+    public function bahan_baku(){
+        return $this->belongsTo(Saldo::class, 'id_bahan_baku', 'id_bahan_baku');
     }
 }
