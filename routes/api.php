@@ -51,6 +51,15 @@ Route::middleware(['auth:sanctum', 'mo'])->prefix('pegawai')->group(function () 
     Route::get('/search/{id}', 'App\Http\Controllers\PegawaiController@cariPegawai');
 });
 
+#routePembelianBahanBaku
+Route::middleware(['auth:sanctum', 'mo'])->prefix('pembelianBahanBaku')->group(function () {
+    Route::get('/getAll', 'App\Http\Controllers\PembelianBahanBakuController@getAll');
+    Route::get('/{id}', 'App\Http\Controllers\PembelianBahanBakuController@getSpecificPemebelian');
+    Route::post('/add', 'App\Http\Controllers\PembelianBahanBakuController@addPembelianBahanBaku');
+    Route::patch('/{id}', 'App\Http\Controllers\PembelianBahanBakuController@updatePembelianBahanBaku');
+    Route::delete('/{id}', 'App\Http\Controllers\PembelianBahanBakuController@deletePmebelianBahanBaku');
+});
+
 #routeGantiPassword
 Route::post('/lupaPassword/create',[UserController::class,'creatToken' ]);
 Route::get('/active/{token}',[UserController::class,'activeToken' ]);
@@ -75,6 +84,10 @@ Route::middleware(['auth:sanctum','admin'])->prefix('bahanbaku')->group(function
     Route::patch('/{id}', 'App\Http\Controllers\BahanBakuController@updateBahanBaku');
     Route::delete('/{id}', 'App\Http\Controllers\BahanBakuController@deleteBahanBakuById');
     Route::get('/{id}', 'App\Http\Controllers\BahanBakuController@getBahanBakuById');
+});
+
+Route::middleware(['auth:sanctum','mo'])->prefix('bahanbakuMO')->group(function(){
+    Route::get('/getAllBahanBaku', 'App\Http\Controllers\BahanBakuController@getAllBahanBaku');
 });
 
 
