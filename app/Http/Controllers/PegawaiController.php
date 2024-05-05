@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Validator;
 class PegawaiController extends Controller
 {
 
-    public function registerPegawai(Request $request){
+    public function registerPegawai(Request $request)
+    {
         $validator = Validator::make(request()->all(), [
             'id_role' => 'required',
             'nama' => 'required',
@@ -24,7 +25,7 @@ class PegawaiController extends Controller
             'gender' => 'required'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
 
@@ -39,9 +40,9 @@ class PegawaiController extends Controller
             'gender' => $request->gender,
         ]);
 
-        if($user){
+        if ($user) {
             return response()->json(['message' => 'Successfully register', 'data' => $user]);
-        }else{
+        } else {
             return response()->json(['message' => 'Error While Register']);
         }
     }
@@ -120,15 +121,31 @@ class PegawaiController extends Controller
         return response()->json(['data' => $pegawai]);
     }
 
-    // Mencari pegawai
-    public function cariPegawai($query)
-    {
-        $pegawai = Pegawai::where('nama', 'like', '%' . $query . '%')
-            ->orWhere('email', 'like', '%' . $query . '%')
-            ->orWhere('no_telpn', 'like', '%' . $query . '%')
-            ->get();
 
-        return response()->json(['data' => $pegawai]);
+    public function getPegawaiById(string $id)
+    {
+        try {
+            $resep = Pegawai::find($id);
+
+            if (is_null($resep)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Resep not found',
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Success retrieve resep by id',
+                'data' => $resep,
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
 }

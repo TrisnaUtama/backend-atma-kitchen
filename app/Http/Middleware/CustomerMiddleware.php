@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
-class AuthenticateMO
+
+class CustomerMiddleware
 {
     /**
      * Handle an incoming request.
@@ -18,7 +19,7 @@ class AuthenticateMO
     {
         $user = Auth::user();
         // dd($user);
-        if ($user->id_role != 3) {
+        if (!$user->id_saldo) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         return $next($request);
