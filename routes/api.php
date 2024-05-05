@@ -1,23 +1,42 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+
 Route::middleware(['auth:sanctum'])->prefix('user')->group(function () {
     Route::patch('update', 'App\Http\Controllers\AuthController@updateProfile');
 });
 
-
-Route::middleware(['auth:sanctum', 'admin'])->prefix('produk')->group(function () {
+#routeProduk
+Route::middleware(['auth:sanctum','admin'])->prefix('produk')->group(function(){
     Route::get('/getAll', 'App\Http\Controllers\ProdukController@getAllProduk');
-    Route::post('/', 'App\Http\Controllers\ProdukController@addingProduct');
+    Route::post('/addProduk', 'App\Http\Controllers\ProdukController@addingProduct');
     Route::patch('/{id}', 'App\Http\Controllers\ProdukController@updateProduct');
     Route::delete('/{id}', 'App\Http\Controllers\ProdukController@deleteProductById');
-    Route::get('/getById', 'App\Http\Controllers\ProdukController@getProductById');
+    Route::get('/{id}', 'App\Http\Controllers\ProdukController@getProductById');
+});
+
+#routeHampers
+Route::middleware(['auth:sanctum','admin'])->prefix('hampers')->group(function(){
+    Route::get('/getAll', 'App\Http\Controllers\HampersController@getAllHampers');
+    Route::post('/add', 'App\Http\Controllers\HampersController@addHampers');
+    Route::patch('/{id}', 'App\Http\Controllers\HampersController@updateHampers');
+    Route::delete('/{id}', 'App\Http\Controllers\HampersController@deleteHampersById');
+    Route::get('/{id}', 'App\Http\Controllers\HampersController@getSpecificHampers');
+});
+
+Route::middleware(['auth:sanctum','admin'])->prefix('detail_hampers')->group(function(){
+    Route::get('/getAll', 'App\Http\Controllers\DetailHampersController@getAllDetail');
+    Route::post('/add', 'App\Http\Controllers\DetailHampersController@addDetail');
+    Route::patch('/{id}', 'App\Http\Controllers\DetailHampersController@updateDetail');
+    Route::delete('/{id}', 'App\Http\Controllers\DetailHampersController@deleteDetail');
 });
 
 //komposisi
@@ -28,8 +47,8 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('komposisi')->group(functio
     Route::delete('/{id}', 'App\Http\Controllers\KomposisiController@deleteKomposisiById');
 });
 
-//resep
-Route::middleware(['auth:sanctum', 'admin'])->prefix('resep')->group(function () {
+#routeResep
+Route::middleware(['auth:sanctum','admin'])->prefix('resep')->group(function() {
     Route::get('/getAll', 'App\Http\Controllers\ResepController@getAllResep');
     Route::post('/add', 'App\Http\Controllers\ResepController@addResep');
     Route::patch('/{id}', 'App\Http\Controllers\ResepController@updateResep');
@@ -38,7 +57,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('resep')->group(function ()
 
 });
 
-#route pegawai
+#routepegawai
 Route::middleware(['auth:sanctum', 'mo'])->prefix('pegawai')->group(function () {
     Route::get('/getAll', 'App\Http\Controllers\PegawaiController@tampilkanPegawai');
     Route::post('/add', 'App\Http\Controllers\PegawaiController@tambahPegawai');
@@ -64,13 +83,52 @@ Route::middleware(['auth:sanctum', 'customer'])->prefix('alamat')->group(functio
     Route::get('/getAlamatById', 'App\Http\Controllers\AlamatController@getAlamatById');
 });
 
+#routePembelianBahanBaku
+Route::middleware(['auth:sanctum', 'mo'])->prefix('pembelianBahanBaku')->group(function () {
+    Route::get('/getAll', 'App\Http\Controllers\PembelianBahanBakuController@getAll');
+    Route::get('/{id}', 'App\Http\Controllers\PembelianBahanBakuController@getSpecificPemebelian');
+    Route::post('/add', 'App\Http\Controllers\PembelianBahanBakuController@addPembelianBahanBaku');
+    Route::patch('/{id}', 'App\Http\Controllers\PembelianBahanBakuController@updatePembelianBahanBaku');
+    Route::delete('/{id}', 'App\Http\Controllers\PembelianBahanBakuController@deletePmebelianBahanBaku');
+});
+
+#routeGantiPassword
+Route::post('/lupaPassword/create',[UserController::class,'creatToken' ]);
+Route::get('/active/{token}',[UserController::class,'activeToken' ]);
+Route::post('reset/{token}',[UserController::class,'resetPass']);
+Route::get('validate/{token}',[UserController::class,'validateToken']);
+
+
+#routePengeluaranLain
+Route::middleware(['auth:sanctum', 'mo'])->prefix('pengeluaranLain')->group(function () {
+    Route::get('/getAll', 'App\Http\Controllers\PengeluaranLainController@getAllPengeluaran');
+    Route::post('/add', 'App\Http\Controllers\PengeluaranLainController@addPengeluaran');
+    Route::patch('/{id}', 'App\Http\Controllers\PengeluaranLainController@updatePengeluaran');
+    Route::delete('/{id}', 'App\Http\Controllers\PengeluaranLainController@deletePengeluaran');
+    Route::get('/{id}', 'App\Http\Controllers\PengeluaranLainController@getPengeluaranById');
+});
+
+
 #routeBahanBaku
 Route::middleware(['auth:sanctum', 'admin'])->prefix('bahanbaku')->group(function () {
     Route::get('/getAllBahanBaku', 'App\Http\Controllers\BahanBakuController@getAllBahanBaku');
     Route::post('/add', 'App\Http\Controllers\BahanBakuController@addBahanBaku');
     Route::patch('/{id}', 'App\Http\Controllers\BahanBakuController@updateBahanBaku');
     Route::delete('/{id}', 'App\Http\Controllers\BahanBakuController@deleteBahanBakuById');
-    Route::get('/getBahanById', 'App\Http\Controllers\BahanBakuController@getBahanBakuById');
+    Route::get('/{id}', 'App\Http\Controllers\BahanBakuController@getBahanBakuById');
+});
+
+Route::middleware(['auth:sanctum','mo'])->prefix('bahanbakuMO')->group(function(){
+    Route::get('/getAllBahanBaku', 'App\Http\Controllers\BahanBakuController@getAllBahanBaku');
+});
+
+
+#routeLimit
+Route::middleware(['auth:sanctum','admin'])->prefix('limit')->group(function(){
+    Route::get('/getAll', 'App\Http\Controllers\Limit_ProdukController@getLimitAllProduk');
+    Route::post('/add', 'App\Http\Controllers\Limit_ProdukController@addLimitProduk');
+    Route::patch('/{id}', 'App\Http\Controllers\Limit_ProdukController@editLimitProduk');
+    Route::delete('/{id}', 'App\Http\Controllers\Limit_ProdukController@deleteLimitProduk');
 });
 
 
@@ -80,12 +138,17 @@ Route::middleware(['auth:sanctum', 'mo'])->prefix('penitip')->group(function () 
     Route::post('/addPenitip', 'App\Http\Controllers\PenitipController@addPenitip');
     Route::patch('/{id}', 'App\Http\Controllers\PenitipController@updatePenitip');
     Route::delete('/{id}', 'App\Http\Controllers\PenitipController@deletePenitipById');
-    Route::get('/getPenitipById', 'App\Http\Controllers\PenitipController@getPenitipById');
+    Route::get('/{id}', 'App\Http\Controllers\PenitipController@getPenitipById');
 });
 
 
 Route::middleware(['auth:sanctum', 'mo'])->prefix('role')->group(function () {
     Route::get('/getAllRole', 'App\Http\Controllers\RoleController@getAllRole');
+  
+#routePenitipAdmin
+Route::middleware(['auth:sanctum','admin'])->prefix('penitipAdmin')->group(function(){
+    Route::get('/getAllPenitip', 'App\Http\Controllers\PenitipController@getAllPenitip');
+    Route::get('/{id}', 'App\Http\Controllers\PenitipController@getPenitipById');
 });
 
 Route::group(['prefix' => 'auth'], function () {

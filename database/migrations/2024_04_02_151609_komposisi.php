@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('komposisi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_resep')->constrained('resep')->onDelete('cascade');
-            $table->foreignId('id_bahan_baku')->constrained('bahan_baku')->onDelete('cascade');
+            $table->foreignId('id_resep')->constrained('resep');
+            $table->foreignId('id_bahan_baku')->constrained('bahan_baku');
             $table->string('jumlah');
         });
     }

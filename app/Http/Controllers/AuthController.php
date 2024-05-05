@@ -122,11 +122,12 @@ class AuthController extends Controller
     protected function respondWithToken($token, $credentials)
     {
         return response()->json([
+            'status' => 'success',
             'data' => $credentials,
             'access_token' => $token,
             'token_type' => 'bearer',
             'expiration' => 525600,
-        ]);
+        ], 200);
     }
 
 

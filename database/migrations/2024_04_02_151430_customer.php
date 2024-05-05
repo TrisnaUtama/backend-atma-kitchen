@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('customer', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_saldo')->constrained('saldo')->onDelete('cascade');
+            $table->foreignId('id_saldo')->constrained('saldo');
             $table->string('nama');
             $table->string('password');
             $table->string('email')->unique();
