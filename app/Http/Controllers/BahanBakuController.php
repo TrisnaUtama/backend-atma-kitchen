@@ -19,7 +19,7 @@ class BahanBakuController extends Controller
                     'message' => 'bahan_bakus is empty',
                     'data' => $bahan_bakus,
                 ], 401);
-            
+
             return response()->json([
                 'status' => true,
                 'message' => 'success retreive all data bahan_bakus',
@@ -31,7 +31,7 @@ class BahanBakuController extends Controller
                 'status' => false,
                 'message' => $e->getMessage(),
             ], 500);
-        } 
+        }
     }
 
     public function addBahanBaku(Request $request)
@@ -40,7 +40,7 @@ class BahanBakuController extends Controller
             $bahan_bakusData = $request->all();
             $validate = Validator::make($bahan_bakusData, [
                 'nama_bahan_baku' => 'required',
-                'stok' => 'required',
+                // 'stok' => 'required',
                 'satuan' => 'required',
             ]);
 
@@ -54,9 +54,9 @@ class BahanBakuController extends Controller
                 return response()->json(['status' => false, 'message' => 'bahan baku already exist'], 400);
             }else{
             $bahan_bakusData['nama_bahan_baku'] = $request->nama_bahan_baku;
-            $bahan_bakusData['stok'] = $request->stok;
+            // $bahan_bakusData['stok'] = $request->stok;
             $bahan_bakusData['satuan'] = $request->satuan;
-    
+
 
             $bahan_bakus = BahanBaku::create($bahan_bakusData);
             return response()->json([
@@ -81,17 +81,17 @@ class BahanBakuController extends Controller
                 return response([
                     'message' => 'Bahan Baku not found',
                     'data' => null,
-                ], 404); 
+                ], 404);
             }
             $updateData = $request->all();
-    
+
             $bahan_bakus->update($updateData);
-    
+
             return response([
                 'message' => 'Success update Bahan Baku',
                 'data' => $bahan_bakus,
             ], 200);
-    
+
         } catch(Exception $e) {
             return response()->json([
                 'status' => false,
@@ -110,7 +110,7 @@ class BahanBakuController extends Controller
                     'message' => 'Bahan Baku not found',
                     'data' => null,
                 ], 404);
-                
+
             if($bahan_bakus->delete())
                 return response([
                     'message' => 'delete Bahan Baku success',
@@ -134,13 +134,13 @@ class BahanBakuController extends Controller
                     'message' => 'Bahan Baku not found',
                     'data' => null,
                 ], 404);
-            
+
             return response()->json([
                 'status' => true,
                 'message' => 'Success retrieve bahan baku: ' . $bahan_bakus->nama_bahan_baku,
                 'data' => $bahan_bakus
             ], 200);
-            
+
         }catch(Exception $e){
             return response()->json([
                 'status' => false,
@@ -148,5 +148,5 @@ class BahanBakuController extends Controller
             ], 500);
         }
     }
-    
+
 }
