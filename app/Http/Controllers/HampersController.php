@@ -37,7 +37,7 @@ class HampersController extends Controller
     public function getSpecificHampers(string $id){
         try{
             $hampers = Hampers::find($id);
-            if($hampers->isEmpty()){
+            if(!$hampers){
                 return response()->json([
                     'status' => false,
                     'message' => 'No hampers founded',
