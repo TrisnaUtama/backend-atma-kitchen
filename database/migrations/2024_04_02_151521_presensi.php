@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('presensi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_pegawai')->constrained('pegawai')->onDelete('cascade');
+            $table->foreignId('id_pegawai')->constrained('pegawai');
             $table->timestamp('tanggal_presensi');
             $table->enum('status_presensi', array('hadir', 'tidak hadir'))->default('tidak hadir');
         });

@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('limit_produk', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_produk')->constrained('produk')->onDelete('cascade');
+            $table->foreignId('id_produk')->constrained('produk');
             $table->integer('limit');
-            $table->date('tanggal');
+            $table->date('tanggal_limit');
         });
     }
 

@@ -5,20 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Limit_Produk extends Model
+class Hampers extends Model
 {
     use HasFactory;
 
     public $timestamps = false;
-    protected $table = 'limit_produk'; 
+    protected $table = 'hampers'; 
     protected $primaryKey = 'id'; 
     protected $fillable = [
-        'id_produk',
-        'limit',
-        'tanggal_limit',
+        'gambar',
+        'harga',
+        'deskripsi',
+        'nama_hampers',
     ];
 
-    public function produk(){
-        return $this->belongsTo(Produk::class, 'id_produk', 'id_produk');
+    public function detailHampers()
+    {
+        return $this->hasMany(Detail_Hampers::class, 'id_hampers');
     }
 }

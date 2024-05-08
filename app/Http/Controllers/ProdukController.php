@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produk;
+use App\Models\Limit_Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+
 
 class ProdukController extends Controller
 {
     public function getAllProduk()
     {
         try {
-            $products = Produk::where('status', 1)->get();  
+            $products = Produk::where('status', 1)->get();
             if ($products->isEmpty()) {
                 return response()->json([
                     'status' => false,
@@ -61,14 +64,27 @@ class ProdukController extends Controller
             }
 
             $productsData['id_penitip'] = $request->id_penitip;
+            $productsData['id_resep'] = $request->id_resep;
             $productsData['nama_produk'] = $request->nama_produk;
             $productsData['deskripsi'] = $request->deskripsi;
             $productsData['kategori'] = $request->kategori;
-            $productsData['stok'] = $request->stok;
+            if ($request->has('stok')) {
+                $productsData['stok'] = $request->stok;
+            } else {
+                $productsData['stok'] = 0;
+            }
             $productsData['harga'] = $request->harga;
+            $productsData['status'] = 1;
             $productsData['tanggal_penitipan'] = $request->tanggal;
+            $today = Carbon::today();
 
             $product = Produk::create($productsData);
+            $limit_produk = Limit_Produk::create([
+                'id_produk' => $product->id,
+                'limit' => 0,
+                'tanggal_limit' => $today,
+            ]);
+
             return response()->json([
                 'status' => true,
                 'message' => 'Success adding data products',
@@ -88,12 +104,50 @@ class ProdukController extends Controller
     {
         try {
             $product = Produk::find($id);
-            $productsData;
-            if(is_null($product)){
+
+            if (is_null($product)) {
                 return response([
                     'message' => 'Product not found',
                     'data' => null,
                 ], 404);
+            }
+            $productsData = [];
+
+            if ($request->has('id_penitip')) {
+                $productsData['id_penitip'] = $request->id_penitip;
+            }
+
+            if ($request->has('id_resep')) {
+                $productsData['id_resep'] = $request->id_resep;
+            }
+
+            if ($request->has('nama_produk')) {
+                $productsData['nama_produk'] = $request->nama_produk;
+            }
+
+            if ($request->has('deskripsi')) {
+                $productsData['deskripsi'] = $request->deskripsi;
+            }
+
+            if ($request->has('kategori')) {
+                $productsData['kategori'] = $request->kategori;
+            }
+
+            if ($request['kategori'] != "Titipan") {
+                $productsData['id_penitip'] = null;
+                $productsData['tanggal_penitipan'] = null;
+            }
+
+            if ($request->has('stok')) {
+                $productsData['stok'] = $request->stok;
+            }
+
+            if ($request->has('harga')) {
+                $productsData['harga'] = $request->harga;
+            }
+
+            if ($request->has('tanggal')) {
+                $productsData['tanggal_penitipan'] = $request->tanggal;
             }
 
             if ($request->hasFile('gambar')) {
@@ -104,22 +158,33 @@ class ProdukController extends Controller
                 $productsData['gambar'] = $fileName;
             }
 
-            $productsData['id_penitip'] = $request->id_penitip;
-            $productsData['nama_produk'] = $request->nama_produk;
-            $productsData['deskripsi'] = $request->deskripsi;
-            $productsData['kategori'] = $request->kategori;
-            $productsData['stok'] = $request->stok;
-            $productsData['harga'] = $request->harga;
-            $productsData['tanggal_penitipan'] = $request->tanggal;
-
             $product->update($productsData);
+
+
+            if ($request->filled('limit') && $request->filled('tanggal_limit')) {
+                $limitData = [
+                    'limit' => $request->limit,
+                    'tanggal_limit' => date('Y-m-d H:i:s', strtotime($request->tanggal_limit)),
+                ];
+
+
+                $limitProduk = Limit_Produk::where('id_produk', $id)->first();
+
+
+                if ($limitProduk) {
+                    $limitProduk->update($limitData);
+                } else {
+                    $limitData['id_produk'] = $id;
+                    Limit_Produk::create($limitData);
+                }
+            }
 
             return response([
                 'message' => 'Success update product',
                 'data' => $product,
             ], 200);
 
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -127,12 +192,13 @@ class ProdukController extends Controller
         }
     }
 
+
     public function deleteProductById(string $id)
     {
-        try{
+        try {
             $product = Produk::find($id);
 
-            if(is_null($product))
+            if (is_null($product))
                 return response([
                     'message' => 'Product not found',
                     'data' => null,
@@ -141,12 +207,12 @@ class ProdukController extends Controller
             $product['status'] = 0;
             $product->save();
 
-            if(!$product->status)
+            if (!$product->status)
                 return response([
                     'message' => 'delete product success',
                     'data' => $product,
                 ], 200);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -154,10 +220,11 @@ class ProdukController extends Controller
         }
     }
 
-    public function getProductById(string $id){
-        try{
+    public function getProductById(string $id)
+    {
+        try {
             $productName = Produk::find($id);
-            if(!$productName) {
+            if (!$productName) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Product name parameter is empty',
@@ -165,14 +232,14 @@ class ProdukController extends Controller
                 ], 400);
             }
 
-            
+
             return response()->json([
                 'status' => true,
                 'message' => 'Success retrieve product',
                 'data' => $productName
             ], 200);
 
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),
