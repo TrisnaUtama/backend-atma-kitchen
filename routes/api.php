@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\CustomerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,10 +37,15 @@ Route::middleware(['auth:sanctum', 'mo'])->prefix('pegawai')->group(function () 
 });
 
 #routeGantiPassword
-Route::post('/lupaPassword/create',[UserController::class,'creatToken' ]);
-Route::get('/active/{token}',[UserController::class,'activeToken' ]);
-Route::post('reset/{token}',[UserController::class,'resetPass']);
-Route::get('validate/{token}',[UserController::class,'validateToken']);
+Route::post('/lupaPassword/create',[CustomerController::class,'creatToken' ]);
+Route::get('/active/{token}',[CustomerController::class,'activeToken' ]);
+Route::post('reset/{token}',[CustomerController::class,'resetPass']);
+Route::get('validate/{token}',[CustomerController::class,'validateToken']);
+
+
+#routeGetHistory
+Route::get('/cariData', [CustomerController::class,'cariCustomer']);
+Route::get('/getHistory/{id}', [CustomerController::class,'getHistoryPesanana']);
 
 
 #routePengeluaranLain
