@@ -32,7 +32,7 @@ class UserController extends Controller
         if($user == null){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Email gagal registrasi'
+                'message' => $request->email
             ], 404);
         }
         try{
