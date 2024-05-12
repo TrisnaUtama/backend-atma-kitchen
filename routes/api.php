@@ -158,6 +158,16 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('login', 'App\Http\Controllers\AuthController@login')->name('login');
 });
 
+Route::middleware(['auth:sanctum', 'customer'])->prefix('detailPemesanan')->group(function () {
+    Route::get('/getHistory', 'App\Http\Controllers\DetailPemesananController@index');
+});
+
+Route::prefix('presensi')->group(function () {
+    Route::post('/add', 'App\Http\Controllers\PresensiController@addPresensi');
+    Route::get('/getAllPresensi', 'App\Http\Controllers\PresensiController@getAllPresensi');
+    Route::patch('/{id}', 'App\Http\Controllers\PresensiController@updatePresensi');
+});
+
 Route::middleware(['auth:sanctum'])->prefix('auth')->group(function () {
     Route::post('logout', 'App\Http\Controllers\AuthController@logout');
 });
