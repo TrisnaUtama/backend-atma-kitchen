@@ -19,6 +19,6 @@ class Limit_Produk extends Model
     ];
 
     public function produk(){
-        return $this->belongsTo(Produk::class, 'id_produk', 'id_produk');
+        return $this->belongsTo(Produk::class, 'id_produk', 'id');
     }
 }

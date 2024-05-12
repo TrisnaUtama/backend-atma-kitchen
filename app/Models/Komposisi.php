@@ -4,31 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
 
-class Detail_Hampers extends Model
+class Komposisi extends Model
 {
     use HasFactory;
+
     public $timestamps = false;
-    protected $table = 'detail_hampers';
+    protected $table = 'komposisi';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'id_produk',
+        'id_resep',
         'id_bahan_baku',
-        'id_hampers',
+        'jumlah'
     ];
 
-    public function produk()
+    public function resep()
     {
-        return $this->belongsTo(Produk::class, 'id_produk', 'id_produk');
+        return $this->belongsTo(Resep::class, 'id_resep', 'id_resep');
     }
-
-    public function bahan_baku()
+    public function bahanBaku()
     {
         return $this->belongsTo(BahanBaku::class, 'id_bahan_baku', 'id_bahan_baku');
-    }
-
-    public function hampers()
-    {
-        return $this->belongsTo(Hampers::class, 'id_hampers', 'id_hampers');
     }
 }

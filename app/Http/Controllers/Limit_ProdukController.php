@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Models\Produk;
 use App\Models\Limit_Produk;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class Limit_ProdukController extends Controller
-{
+class Limit_ProdukController extends Controller{
+
     public function getLimitAllProduk(){
         try{
             $limit = Limit_Produk::all();
@@ -30,6 +31,23 @@ class Limit_ProdukController extends Controller
             ], 500);
         }
     }
+
+    public function getLimitProdukToday(){
+        try {
+            $limit = Limit_Produk::where('tanggal_limit', Carbon::now()->toDateString())->with('produk')->get();
+            return response()->json([
+                'status' => true,
+                'produk_data' => $limit
+            ], 200);
+    
+        } catch(Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage() 
+            ], 500);
+        }
+    }
+    
 
     public function addLimitProduk(Request $request){
         try{
