@@ -26,11 +26,15 @@ class Produk extends Model
     ];
 
     public function penitip(){
-        return $this->belongsTo(Penitip::class, 'id_penitip', 'id_penitip');
+        return $this->belongsTo(Penitip::class, 'id_penitip', 'id');
     }
 
     public function resep(){
-        return $this->belongsTo(Resep::class, 'id_resep', 'id_resep');
+        return $this->belongsTo(Resep::class, 'id_resep', 'id');
+    }
+
+    public function limit(){
+        return $this->hasMany(Limit_Produk::class, 'id_produk', 'id');
     }
 }
 
