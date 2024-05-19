@@ -124,8 +124,7 @@ class PembelianBahanBakuController extends Controller
             if ($request->has('harga')) {
                 $updatePembelian['harga'] = $request->harga;
             }
-
-
+            
             $pembelian->update($updatePembelian);
             return response([
                 'message' => 'Success update product',

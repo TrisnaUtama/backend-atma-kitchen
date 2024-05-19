@@ -127,6 +127,7 @@ Route::middleware(['auth:sanctum', 'mo'])->prefix('bahanbakuMO')->group(function
 });
 
 
+
 #routeLimit
 Route::middleware(['auth:sanctum', 'admin'])->prefix('limit')->group(function () {
     Route::get('/getAll', 'App\Http\Controllers\Limit_ProdukController@getLimitAllProduk');
@@ -165,6 +166,23 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('register', 'App\Http\Controllers\AuthController@register');
     Route::post('registerPegawai', 'App\Http\Controllers\PegawaiController@registerPegawai');
     Route::post('login', 'App\Http\Controllers\AuthController@login')->name('login');
+});
+
+Route::middleware(['auth:sanctum', 'customer'])->prefix('detailPemesanan')->group(function () {
+    Route::get('/getHistory', 'App\Http\Controllers\DetailPemesananController@index');
+});
+Route::middleware(['auth:sanctum', 'admin'])->prefix('detailPemesanan')->group(function () {
+    Route::get('/getJarak', 'App\Http\Controllers\DetailPemesananController@getAllJarakNull');
+    Route::get('/getStatus', 'App\Http\Controllers\DetailPemesananController@getStatus');
+    Route::post('/addJarakDelivery/{id}', 'App\Http\Controllers\DetailPemesananController@addJarakDelivery');
+    Route::post('/addPembayaran/{id}', 'App\Http\Controllers\DetailPemesananController@addPembayaran');
+});
+
+
+Route::prefix('presensi')->group(function () {
+    Route::post('/add', 'App\Http\Controllers\PresensiController@addPresensi');
+    Route::get('/getAllPresensi', 'App\Http\Controllers\PresensiController@getAllPresensi');
+    Route::patch('/{id}', 'App\Http\Controllers\PresensiController@updatePresensi');
 });
 
 Route::middleware(['auth:sanctum'])->prefix('auth')->group(function () {
