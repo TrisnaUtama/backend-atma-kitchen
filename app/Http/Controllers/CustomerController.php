@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Psy\Readline\Hoa\Console;
 use App\Models\Customer;
 use App\Models\Pesanan;
+use App\Models\Alamat;
 
 
 class CustomerController extends Controller
@@ -209,4 +210,6 @@ class CustomerController extends Controller
             ], 404);
         }
     }
+
+    
 }

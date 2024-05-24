@@ -103,6 +103,13 @@ Route::get('validate/{token}',[CustomerController::class,'validateToken']);
 Route::get('/cariData', [CustomerController::class,'cariCustomer']);
 Route::get('/getHistory/{id}', [CustomerController::class,'getHistoryPesanana']);
 
+#routePaymentCustomer
+Route::middleware(['auth:sanctum', 'customer'])->prefix('bayar')->group(function (){
+Route::get('/daftarPesanan/{id}','App\Http\Controllers\PemesananController@payPesanan');
+Route::post('/buktiBayar/{id}','App\Http\Controllers\PemesananController@buktiBayar');
+});
+
+
 #routePengeluaranLain
 Route::middleware(['auth:sanctum', 'mo'])->prefix('pengeluaranLain')->group(function () {
     Route::get('/getAll', 'App\Http\Controllers\PengeluaranLainController@getAllPengeluaran');

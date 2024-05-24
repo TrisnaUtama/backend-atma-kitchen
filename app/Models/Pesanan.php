@@ -12,6 +12,8 @@ class Pesanan extends Model
     protected $table = 'pemesanan';
     protected $primaryKey = 'id';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'id_customer',
         'id_penitip',
@@ -24,6 +26,7 @@ class Pesanan extends Model
         'potongan_poin',
         'status_pesanan',
         'uang_customer',
+        'bukti_pembayaran',
         'tip',
     ];
 
