@@ -12,15 +12,24 @@ class DetailPesanan extends Model
 
     protected $fillable = [
         'id_produk',
+        'id_hampers',
         'id_pemesanan',
         'subtotal',
         'jumlah',
     ];
 
-    public function Produk(){
+    public function Produk()
+    {
         return $this->belongsTo(Produk::class, 'id_produk', 'id');
     }
-    public function Pemesanan(){
+
+    public function hampers()
+    {
+        return $this->belongsTo(Hampers::class, 'id_hampers', 'id');
+    }
+
+    public function Pemesanan()
+    {
         return $this->belongsTo(Pesanan::class, 'id_pemesanan', 'id_pemesanan');
     }
 }

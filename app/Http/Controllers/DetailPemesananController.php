@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alamat;
+use App\Models\Customer;
 use App\Models\detailPemesanan;
 use App\Models\Pemesanan;
 use App\Models\Produk;
@@ -31,6 +33,18 @@ class DetailPemesananController extends Controller
             ->with('detailPemesanan', 'detailPemesanan.produk')
             ->get()
             ->sortByDesc('id');
+
+        $namaCustomer = [];
+        foreach ($orders as $order) {
+            $namaCustomer = Customer::where('id', $order->id_customer)->first();
+            $order->nama = $namaCustomer;
+        }
+        $alamat = [];
+        foreach ($orders as $order) {
+            $alamat = Alamat::where('id', $order->id_alamat)->get();
+            $order->alamat = $alamat;
+
+        }
 
         return response()->json([
             'status' => true,
@@ -110,7 +124,16 @@ class DetailPemesananController extends Controller
             ->with('detailPemesanan', 'detailPemesanan.produk')
             ->get()
             ->sortByDesc('id');
-
+        $namaCustomer = [];
+        foreach ($orders as $order) {
+            $namaCustomer = Customer::where('id', $order->id_customer)->first();
+            $order->nama = $namaCustomer;
+        }
+        $alamat = [];
+        foreach ($orders as $order) {
+            $alamat = Alamat::where('id', $order->id_alamat)->get();
+            $order->alamat = $alamat;
+        }
         return response()->json([
             'status' => true,
             'message' => 'Success retrieve all data pemesanan with status_pembayaran "menunggu pembayaran"',
@@ -154,6 +177,7 @@ class DetailPemesananController extends Controller
             $tip = $uang_customer - $subtotal;
             $order->uang_customer = $uang_customer;
             $order->tip = $tip;
+            $order->status_pesanan = 'sudah di bayar';
             $order->save();
         } else {
             return response()->json([
@@ -169,7 +193,26 @@ class DetailPemesananController extends Controller
         ], 200);
     }
 
-
-
-
+    public function getStatusPesanan()
+    {
+        $orders = Pemesanan::where('status_pesanan', 'sudah di bayar')
+            ->with('detailPemesanan', 'detailPemesanan.produk')
+            ->get()
+            ->sortByDesc('id');
+        $namaCustomer = [];
+        foreach ($orders as $order) {
+            $namaCustomer = Customer::where('id', $order->id_customer)->first();
+            $order->nama = $namaCustomer;
+        }
+        $alamat = [];
+        foreach ($orders as $order) {
+            $alamat = Alamat::where('id', $order->id_alamat)->get();
+            $order->alamat = $alamat;
+        }
+        return response()->json([
+            'status' => true,
+            'message' => 'Success retrieve all data pemesanan with status_pembayaran "sudah di bayar"',
+            'data' => $orders
+        ], 200);
+    }
 }

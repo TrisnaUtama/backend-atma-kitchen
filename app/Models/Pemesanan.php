@@ -20,6 +20,7 @@ class Pemesanan extends Model
         'ongkir',
         'poin_pesanan',
         'status_pesanan',
+        'id_alamat',
         'uang_customer',
         'tip',
     ];
@@ -31,6 +32,11 @@ class Pemesanan extends Model
 
     public function costumer()
     {
-        return $this->belongsTo(Customer::class, 'id_customer', 'id_customer');
+        return $this->belongsTo(Customer::class, 'id_customer', 'id');
+    }
+
+    public function alamat()
+    {
+        return $this->belongsTo(Alamat::class, 'id_alamat', 'id');
     }
 }
