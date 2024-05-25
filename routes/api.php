@@ -99,10 +99,17 @@ Route::get('/active/{token}', [CustomerController::class, 'activeToken']);
 Route::post('reset/{token}', [CustomerController::class, 'resetPass']);
 Route::get('validate/{token}', [CustomerController::class, 'validateToken']);
 
-
 #routeGetHistory
 Route::get('/cariData', [CustomerController::class, 'cariCustomer']);
 Route::get('/getHistory/{id}', [CustomerController::class, 'getHistoryPesanana']);
+Route::get('/cariData', [CustomerController::class,'cariCustomer']);
+Route::get('/getHistory/{id}', [CustomerController::class,'getHistoryPesanana']);
+
+#routePaymentCustomer
+Route::middleware(['auth:sanctum', 'customer'])->prefix('bayar')->group(function (){
+Route::get('/daftarPesanan/{id}','App\Http\Controllers\PemesananController@payPesanan');
+Route::post('/buktiBayar/{id}','App\Http\Controllers\PemesananController@buktiBayar');
+});
 
 
 #routePengeluaranLain
@@ -131,10 +138,14 @@ Route::middleware(['auth:sanctum', 'mo'])->prefix('bahanbakuMO')->group(function
 #routeLimit
 Route::middleware(['auth:sanctum', 'admin'])->prefix('limit')->group(function () {
     Route::get('/getAll', 'App\Http\Controllers\Limit_ProdukController@getLimitAllProduk');
-    Route::get('/getToday', 'App\Http\Controllers\Limit_ProdukController@getLimitProdukToday');
     Route::post('/add', 'App\Http\Controllers\Limit_ProdukController@addLimitProduk');
     Route::patch('/{id}', 'App\Http\Controllers\Limit_ProdukController@editLimitProduk');
     Route::delete('/{id}', 'App\Http\Controllers\Limit_ProdukController@deleteLimitProduk');
+    Route::get('/getToday', 'App\Http\Controllers\Limit_ProdukController@getLimitProdukToday');
+});
+
+Route::prefix('limit')->group(function () {
+    Route::get('/getToday', 'App\Http\Controllers\Limit_ProdukController@getLimitProdukToday');
 });
 
 

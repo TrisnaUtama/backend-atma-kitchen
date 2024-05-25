@@ -34,10 +34,25 @@ class Limit_ProdukController extends Controller{
 
     public function getLimitProdukToday(){
         try {
-            $limit = Limit_Produk::where('tanggal_limit', Carbon::now()->toDateString())->with('produk')->get();
+            $today = Carbon::today()->toDateString();
+            $produk = Produk::whereHas('limit', function($query) use ($today) {
+                $query->where('tanggal_limit', $today);
+            })
+            ->orWhereNotNull('stok')
+            ->with(['limit' => function($query) use ($today) {
+                $query->where('tanggal_limit', $today);
+            }])
+            ->get();
+
+            if(!$produk){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'produk is empty' 
+                ], 500);
+            }
             return response()->json([
                 'status' => true,
-                'produk_data' => $limit
+                'data' => $produk
             ], 200);
     
         } catch(Exception $e) {
