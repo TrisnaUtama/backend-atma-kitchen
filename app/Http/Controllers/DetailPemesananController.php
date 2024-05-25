@@ -108,7 +108,7 @@ class DetailPemesananController extends Controller
             $detail->subtotal = $subtotal;
             $detail->save();
         }
-
+        $order->status_pesanan = 'dikonfirmasi admin';
         $order->save();
 
         return response()->json([
@@ -211,7 +211,7 @@ class DetailPemesananController extends Controller
         }
         return response()->json([
             'status' => true,
-            'message' => 'Success retrieve all data pemesanan with status pembayaran "sudah di bayar"',
+            'message' => 'Success retrieve all data pemesanan with status_pembayaran "sudah di bayar"',
             'data' => $orders
         ], 200);
     }
