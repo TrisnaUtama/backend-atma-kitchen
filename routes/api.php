@@ -102,13 +102,13 @@ Route::get('validate/{token}', [CustomerController::class, 'validateToken']);
 #routeGetHistory
 Route::get('/cariData', [CustomerController::class, 'cariCustomer']);
 Route::get('/getHistory/{id}', [CustomerController::class, 'getHistoryPesanana']);
-Route::get('/cariData', [CustomerController::class,'cariCustomer']);
-Route::get('/getHistory/{id}', [CustomerController::class,'getHistoryPesanana']);
+Route::get('/cariData', [CustomerController::class, 'cariCustomer']);
+Route::get('/getHistory/{id}', [CustomerController::class, 'getHistoryPesanana']);
 
 #routePaymentCustomer
-Route::middleware(['auth:sanctum', 'customer'])->prefix('bayar')->group(function (){
-Route::get('/daftarPesanan/{id}','App\Http\Controllers\PemesananController@payPesanan');
-Route::post('/buktiBayar/{id}','App\Http\Controllers\PemesananController@buktiBayar');
+Route::middleware(['auth:sanctum', 'customer'])->prefix('bayar')->group(function () {
+    Route::get('/daftarPesanan/{id}', 'App\Http\Controllers\PemesananController@payPesanan');
+    Route::post('/buktiBayar/{id}', 'App\Http\Controllers\PemesananController@buktiBayar');
 });
 
 

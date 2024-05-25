@@ -100,8 +100,8 @@ class DetailPemesananController extends Controller
         $subtotal = $order->ongkir;
         $detailPemesanan = DetailPemesanan::where('id_pemesanan', $id)->get();
         foreach ($detailPemesanan as $detail) {
-            $hargaProduk = Produk::find($detail->id_produk);
-            $subtotal += $hargaProduk->harga * $detail->jumlah;
+            // $hargaProduk = Produk::find($detail->id_produk);
+            $subtotal += $detail->subtotal;
         }
 
         foreach ($detailPemesanan as $detail) {
@@ -120,7 +120,7 @@ class DetailPemesananController extends Controller
 
     public function getStatus()
     {
-        $orders = Pemesanan::where('status_pesanan', 'menunggu pembayaran')
+        $orders = Pemesanan::where('status_pesanan', 'dikonfirmasi admin')
             ->with('detailPemesanan', 'detailPemesanan.produk')
             ->get()
             ->sortByDesc('id');
@@ -136,7 +136,7 @@ class DetailPemesananController extends Controller
         }
         return response()->json([
             'status' => true,
-            'message' => 'Success retrieve all data pemesanan with status_pembayaran "menunggu pembayaran"',
+            'message' => 'Success retrieve all data pemesanan with status_pembayaran "dikonfirmasi admin"',
             'data' => $orders
         ], 200);
     }
