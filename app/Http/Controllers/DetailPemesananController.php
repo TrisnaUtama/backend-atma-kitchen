@@ -57,7 +57,7 @@ class DetailPemesananController extends Controller
     public function addJarakDelivery(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'jarak_delivery' => 'required|numeric|min:0',
+            'jarak_delivery' => 'required|numeric|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -100,8 +100,8 @@ class DetailPemesananController extends Controller
         $subtotal = $order->ongkir;
         $detailPemesanan = DetailPemesanan::where('id_pemesanan', $id)->get();
         foreach ($detailPemesanan as $detail) {
-            // $hargaProduk = Produk::find($detail->id_produk);
-            $subtotal += $detail->subtotal;
+            $hargaProduk = Produk::find($detail->id_produk);
+            $subtotal += $hargaProduk->harga * $detail->jumlah;
         }
 
         foreach ($detailPemesanan as $detail) {
