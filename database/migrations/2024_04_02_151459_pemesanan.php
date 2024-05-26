@@ -21,8 +21,9 @@ return new class extends Migration
             $table->double('ongkir')->nullable();
             $table->string('poin_pesanan')->nullable();
             $table->string('potongan_poin')->nullable();
-            $table->enum('status_pesanan', array('menunggu pembayaran','diproses','siap di-pickup', 'sedang dikirim', 'sudah di-pickup', 'selesai', 'dibatalkan'))->default('menunggu pembayaran');
+            $table->enum('status_pesanan', array('menunggu pembayaran','sudah di bayar','diproses','siap di-pickup', 'sedang dikirim', 'sudah di-pickup', 'selesai', 'dibatalkan'))->default('menunggu pembayaran');
             $table->double('uang_customer')->nullable();
+            $table->string('bukti_pembayaran')->nullable();
             $table->double('tip')->nullable();
 
         });

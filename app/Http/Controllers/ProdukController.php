@@ -246,4 +246,8 @@ class ProdukController extends Controller
         }
     }
 
+    public function tolakPesanan(string $id){
+        
+    }
+
 }

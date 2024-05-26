@@ -113,14 +113,23 @@ Route::middleware(['auth:sanctum', 'mo'])->prefix('pembelianBahanBaku')->group(f
 
 #routeGantiPassword
 
-Route::post('/lupaPassword/create',[CustomerController::class,'creatToken' ]);
-Route::get('/active/{token}',[CustomerController::class,'activeToken' ]);
-Route::post('reset/{token}',[CustomerController::class,'resetPass']);
-Route::get('validate/{token}',[CustomerController::class,'validateToken']);
+Route::post('/lupaPassword/create', [CustomerController::class, 'creatToken']);
+Route::get('/active/{token}', [CustomerController::class, 'activeToken']);
+Route::post('reset/{token}', [CustomerController::class, 'resetPass']);
+Route::get('validate/{token}', [CustomerController::class, 'validateToken']);
 
 #routeGetHistory
-Route::get('/cariData', [CustomerController::class,'cariCustomer']);
-Route::get('/getHistory/{id}', [CustomerController::class,'getHistoryPesanana']);
+Route::get('/cariData', [CustomerController::class, 'cariCustomer']);
+Route::get('/getHistory/{id}', [CustomerController::class, 'getHistoryPesanana']);
+Route::get('/cariData', [CustomerController::class, 'cariCustomer']);
+Route::get('/getHistory/{id}', [CustomerController::class, 'getHistoryPesanana']);
+
+#routePaymentCustomer
+Route::middleware(['auth:sanctum', 'customer'])->prefix('bayar')->group(function () {
+    Route::get('/daftarPesanan/{id}', 'App\Http\Controllers\PemesananController@payPesanan');
+    Route::post('/buktiBayar/{id}', 'App\Http\Controllers\PemesananController@buktiBayar');
+});
+
 
 #routePengeluaranLain
 Route::middleware(['auth:sanctum', 'mo'])->prefix('pengeluaranLain')->group(function () {
@@ -144,7 +153,6 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('bahanbaku')->group(functio
 Route::middleware(['auth:sanctum', 'mo'])->prefix('bahanbakuMO')->group(function () {
     Route::get('/getAllBahanBaku', 'App\Http\Controllers\BahanBakuController@getAllBahanBaku');
 });
-
 
 #routeLimit
 Route::middleware(['auth:sanctum', 'admin'])->prefix('limit')->group(function () {
@@ -194,9 +202,11 @@ Route::group(['prefix' => 'auth'], function () {
 Route::middleware(['auth:sanctum', 'customer'])->prefix('detailPemesanan')->group(function () {
     Route::get('/getHistory', 'App\Http\Controllers\DetailPemesananController@index');
 });
+
 Route::middleware(['auth:sanctum', 'admin'])->prefix('detailPemesanan')->group(function () {
     Route::get('/getJarak', 'App\Http\Controllers\DetailPemesananController@getAllJarakNull');
     Route::get('/getStatus', 'App\Http\Controllers\DetailPemesananController@getStatus');
+    Route::get('/getStatusPesanan', 'App\Http\Controllers\DetailPemesananController@getStatusPesanan');
     Route::post('/addJarakDelivery/{id}', 'App\Http\Controllers\DetailPemesananController@addJarakDelivery');
     Route::post('/addPembayaran/{id}', 'App\Http\Controllers\DetailPemesananController@addPembayaran');
 });

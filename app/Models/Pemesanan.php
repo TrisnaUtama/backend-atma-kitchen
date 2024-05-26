@@ -23,6 +23,7 @@ class Pemesanan extends Model
         'poin_pesanan',
         'potongan_poin',
         'status_pesanan',
+        'id_alamat',
         'uang_customer',
         'tip',
         'no_nota',
