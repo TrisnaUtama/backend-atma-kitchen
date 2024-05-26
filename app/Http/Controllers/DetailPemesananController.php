@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Alamat;
 use App\Models\Customer;
 use App\Models\detailPemesanan;
+use App\Models\Hampers;
 use App\Models\Pemesanan;
 use App\Models\Produk;
 use Illuminate\Http\Request;
@@ -101,6 +102,7 @@ class DetailPemesananController extends Controller
         $detailPemesanan = DetailPemesanan::where('id_pemesanan', $id)->get();
         foreach ($detailPemesanan as $detail) {
             $hargaProduk = Produk::find($detail->id_produk);
+            $hargaProduk = Hampers::find($detail->id_hampers);
             $subtotal += $hargaProduk->harga * $detail->jumlah;
         }
 
@@ -120,7 +122,7 @@ class DetailPemesananController extends Controller
 
     public function getStatus()
     {
-        $orders = Pemesanan::where('status_pesanan', 'dikonfirmasi admin')
+        $orders = Pemesanan::where('status_pesanan', 'sudah di bayar')
             ->with('detailPemesanan', 'detailPemesanan.produk')
             ->get()
             ->sortByDesc('id');
@@ -136,7 +138,7 @@ class DetailPemesananController extends Controller
         }
         return response()->json([
             'status' => true,
-            'message' => 'Success retrieve all data pemesanan with status_pembayaran "dikonfirmasi admin"',
+            'message' => 'Success retrieve all data pemesanan with status_pesanan "sudah di bayar"',
             'data' => $orders
         ], 200);
     }
@@ -168,6 +170,7 @@ class DetailPemesananController extends Controller
         $detailPemesanan = DetailPemesanan::where('id_pemesanan', $id)->get();
         foreach ($detailPemesanan as $detail) {
             $hargaProduk = Produk::find($detail->id_produk);
+            $hargaProduk = Hampers::find($detail->id_hampers);
             $subtotal += $hargaProduk->harga * $detail->jumlah;
         }
 
@@ -177,7 +180,7 @@ class DetailPemesananController extends Controller
             $tip = $uang_customer - $subtotal;
             $order->uang_customer = $uang_customer;
             $order->tip = $tip;
-            $order->status_pesanan = 'sudah di bayar';
+            $order->status_pesanan = 'pembayaran valid';
             $order->save();
         } else {
             return response()->json([
@@ -195,7 +198,7 @@ class DetailPemesananController extends Controller
 
     public function getStatusPesanan()
     {
-        $orders = Pemesanan::where('status_pesanan', 'sudah di bayar')
+        $orders = Pemesanan::where('status_pesanan', 'pembayaran valid')
             ->with('detailPemesanan', 'detailPemesanan.produk')
             ->get()
             ->sortByDesc('id');
@@ -211,7 +214,7 @@ class DetailPemesananController extends Controller
         }
         return response()->json([
             'status' => true,
-            'message' => 'Success retrieve all data pemesanan with status_pembayaran "sudah di bayar"',
+            'message' => 'Success retrieve all data pemesanan with status_pembayaran "pembayaran valid"',
             'data' => $orders
         ], 200);
     }
