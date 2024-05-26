@@ -16,7 +16,8 @@ class detailPemesanan extends Model
         'id_hampers',
         'id_pemesanan',
         'subtotal',
-        'jumlah'
+        'jumlah',
+        'status',
     ];
 
     public function produk()
@@ -32,4 +33,7 @@ class detailPemesanan extends Model
         return $this->belongsTo(Pesanan::class, 'id_pemesanan', 'id');
     }
 
+
 }
+
+
