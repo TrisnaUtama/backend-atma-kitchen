@@ -34,8 +34,16 @@ class Pesanan extends Model
         return $this->belongsTo(Customer::class, 'id_customer', 'id_customer');
     }
 
+    public function Produk(){
+        return $this->belongsTo(Produk::class, 'id_produk', 'id');
+    }
+
     public function detail_pemesanan()
     {
         return $this->hasMany(DetailPesanan::class, 'id_pemesanan', 'id');
+    }
+
+    public function Saldo(){
+        return $this->belongsTo(Saldo::class, 'id_saldo', 'id');
     }
 }

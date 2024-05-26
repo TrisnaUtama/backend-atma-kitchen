@@ -67,6 +67,13 @@ Route::middleware(['auth:sanctum', 'mo'])->prefix('pegawai')->group(function () 
     Route::get('/{id}', 'App\Http\Controllers\PegawaiController@getPegawaiById');
 });
 
+#konfrimasiPesananMo
+Route::middleware(['auth:sanctum', 'mo'])->prefix('konfirmasi')->group(function () {
+    Route::get('/getPemesanan', 'App\Http\Controllers\PemesananController@getconfirmPesanan');
+    Route::post('/confirmPesanan/{id}', 'App\Http\Controllers\PemesananController@confirmPesanan');
+
+});
+
 Route::middleware(['auth:sanctum', 'owner'])->prefix('pegawaiOwner')->group(function () {
     Route::get('/getAll', 'App\Http\Controllers\PegawaiController@tampilkanPegawai');
     Route::get('/{id}', 'App\Http\Controllers\PegawaiController@getPegawaiById');

@@ -27,8 +27,9 @@ class detailPemesanan extends Model
     {
         return $this->belongsTo(Hampers::class, 'id_hampers', 'id');
     }
-    public function pemesanan()
+    public function Pesanan()
     {
-        return $this->belongsTo(Pemesanan::class, 'id_pemesanan', 'id');
+        return $this->belongsTo(Pesanan::class, 'id_pemesanan', 'id');
     }
+
 }

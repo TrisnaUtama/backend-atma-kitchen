@@ -40,6 +40,7 @@ class AuthController extends Controller
             'tanggal_lahir' => $request->tanggal_lahir,
             'password' => Hash::make($request->password),
         ]);
+        
 
         if ($user) {
             return response()->json(['message' => 'Successfully register', 'data' => $user]);
