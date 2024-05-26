@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pemesanan', function (Blueprint $table) {
-            $table->id();
+            $table->string('id', 255)->primary();
             $table->foreignId('id_customer')->constrained('customer');
             $table->timestamp('tanggal_pemesanan')->nullable();
             $table->timestamp('tanggal_pembayaran')->nullable();
@@ -28,9 +28,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('pemesanan');

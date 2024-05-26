@@ -43,7 +43,6 @@ class ProdukController extends Controller
         try {
             $productsData = $request->all();
             $validate = Validator::make($productsData, [
-                'id_resep' => 'required',
                 'nama_produk' => 'required',
                 'gambar' => 'required',
                 'deskripsi' => 'required',

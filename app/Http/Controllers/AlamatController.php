@@ -40,9 +40,7 @@ class AlamatController extends Controller
         try {
             $alamatData = $request->all();
             $user = Auth::user();
-            // dd($user->id);
             $validate = Validator::make($alamatData, [
-                // 'id_customer' => 'required',
                 'nama_alamat' => 'required',
             ]);
 
@@ -123,8 +121,6 @@ class AlamatController extends Controller
     {
         try {
             $user = Auth::user();
-
-
             if (!$user->id) {
                 return response()->json([
                     'status' => false,

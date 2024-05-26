@@ -16,7 +16,8 @@ class detailPemesanan extends Model
         'id_hampers',
         'id_pemesanan',
         'subtotal',
-        'jumlah'
+        'jumlah',
+        'status',
     ];
 
     public function produk()
