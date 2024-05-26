@@ -9,7 +9,7 @@ class DetailPesanan extends Model
 {
     use HasFactory;
     protected $table = 'detail_pemesanan';
-
+    protected $primaryKey = 'id';
     protected $fillable = [
         'id_produk',
         'id_hampers',
@@ -32,4 +32,5 @@ class DetailPesanan extends Model
     {
         return $this->belongsTo(Pesanan::class, 'id_pemesanan', 'id_pemesanan');
     }
+
 }
