@@ -12,17 +12,21 @@ class Pemesanan extends Model
     protected $table = 'pemesanan';
     protected $primaryKey = 'id';
     protected $fillable = [
+        'id',
         'id_customer',
+        'id_alamat',
         'tanggal_pemesanan',
         'tanggal_pembayaran',
         'tanggal_diambil',
         'jarak_delivery',
         'ongkir',
         'poin_pesanan',
+        'potongan_poin',
         'status_pesanan',
         'id_alamat',
         'uang_customer',
         'tip',
+        'no_nota',
     ];
 
     public function detailPemesanan()

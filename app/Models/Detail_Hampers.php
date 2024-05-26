@@ -19,7 +19,7 @@ class Detail_Hampers extends Model
 
     public function produk()
     {
-        return $this->belongsTo(Produk::class, 'id_produk', 'id_produk');
+        return $this->belongsTo(Produk::class, 'id_produk', 'id');
     }
 
     public function bahan_baku()

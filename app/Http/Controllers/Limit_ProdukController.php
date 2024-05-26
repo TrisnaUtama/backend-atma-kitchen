@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Produk;
 use App\Models\Limit_Produk;
+use App\Models\Hampers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -32,33 +33,78 @@ class Limit_ProdukController extends Controller{
         }
     }
 
-    public function getLimitProdukToday(){
+    public function getLimitProdukToday() {
         try {
             $today = Carbon::today()->toDateString();
+            
             $produk = Produk::whereHas('limit', function($query) use ($today) {
-                $query->where('tanggal_limit', $today);
-            })
-            ->orWhereNotNull('stok')
-            ->with(['limit' => function($query) use ($today) {
-                $query->where('tanggal_limit', $today);
-            }])
-            ->get();
-
-            if(!$produk){
+                    $query->where('tanggal_limit', $today);
+                })
+                ->orWhere('stok', '>', 0)
+                ->with(['limit' => function($query) use ($today) {
+                    $query->where('tanggal_limit', $today);
+                }])
+                ->get();
+            
+            $produkWithSum = [];
+            foreach ($produk as $item) {
+                $stok = $item->stok ?? 0;
+                $limit = $item->limit->first()->limit ?? 0;
+                $sum = $stok + $limit;
+                $produkWithSum[$item->id] = $sum;
+            }
+            
+            $detailhampers = Hampers::with('detailHampers.produk')->get();
+            $hampers = Hampers::all();
+            
+            foreach ($detailhampers as $hampersItem) {
+                $productStocks = [];
+                foreach ($hampersItem->detailHampers as $detail) {
+                    $productId = $detail->id_produk;
+                    if (isset($produkWithSum[$productId])) {
+                        $productStocks[] = $produkWithSum[$productId];
+                    }
+                }
+                
+                if (!empty($productStocks)) {
+                    $minStock = min($productStocks);
+                    $hampersItem->update(['stok' => $minStock]);
+                }
+            }
+            
+            if ($produk->isEmpty() && $hampers->isEmpty()) {
                 return response()->json([
                     'status' => false,
                     'message' => 'produk is empty' 
                 ], 500);
             }
+    
             return response()->json([
                 'status' => true,
-                'data' => $produk
+                'data' => [
+                    'produk' => $produk,
+                    'hampers' => $hampers
+                ]
             ], 200);
     
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage() 
+            ], 500);
+        }
+    }
+    
+    
+    
+
+    public function getLimitHampers(){
+        try{
+
+        }catch(Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
             ], 500);
         }
     }

@@ -17,6 +17,7 @@ class Hampers extends Model
         'harga',
         'deskripsi',
         'nama_hampers',
+        'stok'
     ];
 
     public function detailHampers()
