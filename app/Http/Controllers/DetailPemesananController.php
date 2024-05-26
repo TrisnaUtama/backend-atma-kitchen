@@ -30,7 +30,7 @@ class DetailPemesananController extends Controller
 
     public function getAllJarakNull()
     {
-        $orders = Pemesanan::whereNull('jarak_delivery')
+        $orders = Pemesanan::where('status_pesanan', 'dikonfirmasi admin')
             ->with('detailPemesanan', 'detailPemesanan.produk')
             ->get()
             ->sortByDesc('id');
@@ -102,15 +102,21 @@ class DetailPemesananController extends Controller
         $detailPemesanan = DetailPemesanan::where('id_pemesanan', $id)->get();
         foreach ($detailPemesanan as $detail) {
             $hargaProduk = Produk::find($detail->id_produk);
-            $hargaProduk = Hampers::find($detail->id_hampers);
-            $subtotal += $hargaProduk->harga * $detail->jumlah;
+            $hargaHampers = Hampers::find($detail->id_hampers);
+            if ($hargaProduk) {
+
+                $subtotal += $hargaProduk->harga * $detail->jumlah;
+            } else if ($hargaHampers) {
+                $subtotal += $hargaHampers->harga * $detail->jumlah;
+
+            }
         }
 
         foreach ($detailPemesanan as $detail) {
             $detail->subtotal = $subtotal;
             $detail->save();
         }
-        $order->status_pesanan = 'dikonfirmasi admin';
+        $order->status_pesanan = 'menunggu pembayaran';
         $order->save();
 
         return response()->json([
@@ -170,8 +176,14 @@ class DetailPemesananController extends Controller
         $detailPemesanan = DetailPemesanan::where('id_pemesanan', $id)->get();
         foreach ($detailPemesanan as $detail) {
             $hargaProduk = Produk::find($detail->id_produk);
-            $hargaProduk = Hampers::find($detail->id_hampers);
-            $subtotal += $hargaProduk->harga * $detail->jumlah;
+            $hargaHampers = Hampers::find($detail->id_hampers);
+            if ($hargaProduk) {
+
+                $subtotal += $hargaProduk->harga * $detail->jumlah;
+            } else if ($hargaHampers) {
+                $subtotal += $hargaHampers->harga * $detail->jumlah;
+
+            }
         }
 
         $uang_customer = $request->uang_customer;

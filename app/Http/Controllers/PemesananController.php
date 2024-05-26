@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Pemesanan;
 use App\Models\DetailPemesanan;
 use App\Models\Produk;
-use App\Models\Customer; 
+use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -27,8 +27,9 @@ class PemesananController extends Controller{
                 'items.*.status' => 'required|string',
                 'items.*.id_alamat' => 'nullable|integer',
                 'items.*.potongan_poin' => 'nullable|numeric',
+                'items.*.deliveryType' => 'nullable|string',
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
@@ -36,11 +37,11 @@ class PemesananController extends Controller{
                     'errors' => $validator->errors(),
                 ], 400);
             }
-    
+
             $data = $validator->validated();
             $user = Auth::user();
             $totalPembayaran = 0;
-            
+
             foreach ($data['items'] as $item) {
                 $totalPembayaran += $item['harga'] * $item['jumlah'];
             }
@@ -65,11 +66,11 @@ class PemesananController extends Controller{
 
             $lastTwoDigitsOfYear = Carbon::now()->format('y');
             $month = Carbon::now()->format('m');
-            
-            $lastOrderNumber = cache('last_order_number', 100); 
+
+            $lastOrderNumber = cache('last_order_number', 100);
             $nextOrderNumber = $lastOrderNumber + 1;
             cache(['last_order_number' => $nextOrderNumber]);
-            
+
             $idPemesanan = sprintf("%s.%s.%03d", $lastTwoDigitsOfYear, $month, $nextOrderNumber);
             $tanggal_pembayaran = null;
 
@@ -87,12 +88,14 @@ class PemesananController extends Controller{
 
             if ($isBirthdayInRange) {
                 $poin *= 2;
-            }   
-            
+            }
+
             $potonganPoin = 0;
             if($data['items'][0]['potongan_poin'] != 0){
                 $potonganPoin = $data['items'][0]['potongan_poin'];
             }
+
+            $status_pesanan = ($data['items'][0]['deliveryType'] === 'pickup') ? 'sudah di bayar' : 'dikonfirmasi admin';
 
 
             $pemesanan = Pemesanan::create([
@@ -101,7 +104,7 @@ class PemesananController extends Controller{
                 'id_alamat' => $data['items'][0]['id_alamat'],
                 'tanggal_pemesanan' => Carbon::now('Asia/Jakarta'),
                 'tanggal_diambil' => Carbon::parse($data['items'][0]['tanggal_diambil'], 'Asia/Jakarta'),
-                'status_pesanan' => "dikonfirmasi admin",
+                'status_pesanan' => $status_pesanan,
                 'poin_pesanan' => $poin,
                 'tanggal_pembayaran' => $tanggal_pembayaran,
                 'potongan_poin' => $data['items'][0]['potongan_poin'],
@@ -111,7 +114,7 @@ class PemesananController extends Controller{
             $customer = Customer::find($user->id);
             $customer->poin -= $potonganPoin;
             $customer->save();
-            
+
             foreach ($data['items'] as $item) {
                 DetailPemesanan::create([
                     'id_produk' => $item['id_produk'] ?? null,
@@ -119,7 +122,7 @@ class PemesananController extends Controller{
                     'id_pemesanan' => $pemesanan->id,
                     'jumlah' => $item['jumlah'],
                     'subtotal' => $item['harga'] * $item['jumlah'],
-                    'status' => $item['status'], 
+                    'status' => $item['status'],
                 ]);
 
                 if ($item['status'] === 'Pre-Order') {
@@ -137,13 +140,13 @@ class PemesananController extends Controller{
                     }
                 }
             }
-    
+
             return response()->json([
                 'status' => true,
                 'message' => 'Pemesanan created successfully',
                 'pemesanan' => $pemesanan,
             ], 201);
-    
+
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
@@ -271,7 +274,7 @@ class PemesananController extends Controller{
             [
                 'bukti_pembayaran.required' => 'bukti pembayaran harus di isi!'
             ],
-        ); 
+        );
         if($validator->fails()){
                 return response()->json([
                     'status' => false,
@@ -287,7 +290,7 @@ class PemesananController extends Controller{
             $hash = md5($idUser. $pesanan->id_pemesanan);
             $extension = $request->file('bukti_pembayaran')->guessExtension();
             $path = $request->file('bukti_pembayaran')->storeAs('buktiBayar', $hash . '.' . $extension, 'public');
-            
+
             $pesanan->update([
                 'status_pesanan' => 'sudah di bayar',
                 'tanggal_pembayaran' => now(),
