@@ -32,8 +32,5 @@ class DetailPesanan extends Model
     {
         return $this->belongsTo(Pesanan::class, 'id_pemesanan', 'id_pemesanan');
     }
-    public function hampers()
-    {
-        return $this->belongsTo(Hampers::class, 'id_hampers', 'id');
-    }
+
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Hampers;
+// use App\Models\Hampers;
 use App\Models\Pesanan;
 use Illuminate\Http\Request;
 use App\Models\Pemesanan;
@@ -15,7 +15,6 @@ use App\Models\Saldo;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Exception;
-use Psy\Readline\Hoa\Console;
 
 class PemesananController extends Controller
 {
@@ -304,7 +303,7 @@ class PemesananController extends Controller
                 }
             ])
                 ->where('id_customer', $customer->id)
-                ->where('status_pesanan', 'dikonfirmasi admin')
+                ->where('status_pesanan', 'menunggu pembayaran')
                 ->get();
 
             if (count($payment) == 0) {
@@ -347,7 +346,7 @@ class PemesananController extends Controller
                 ], 400);
             }
 
-            $pesanan = Pesanan::where('id', $id)->where('status_pesanan', 'dikonfirmasi admin')->first();
+            $pesanan = Pesanan::where('id', $id)->where('status_pesanan', 'menunggu pembayaran')->first();
             if ($pesanan == null) {
                 throw new Exception();
             }
