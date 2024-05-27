@@ -57,16 +57,73 @@ class DetailPemesananController extends Controller
 
     public function addJarakDelivery(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'jarak_delivery' => 'required|numeric|min:1',
-        ]);
 
-        if ($validator->fails()) {
+        try{
+            $validator = Validator::make($request->all(), [
+                'jarak_delivery' => 'required|numeric|min:1',
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 400);
+            }
+    
+            $order = Pemesanan::find($id);
+    
+            if (!$order) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Order not found'
+                ], 404);
+            }
+    
+            $jarak_delivery = $request->jarak_delivery;
+            if ($jarak_delivery <= 5) {
+                $order->ongkir = 10000;
+                $order->jarak_delivery = $request->jarak_delivery;
+    
+            } else if ($jarak_delivery > 5 && $jarak_delivery <= 10) {
+                $order->ongkir = 15000;
+                $order->jarak_delivery = $request->jarak_delivery;
+    
+            } else if ($jarak_delivery > 10 && $jarak_delivery <= 15) {
+                $order->ongkir = 20000;
+                $order->jarak_delivery = $request->jarak_delivery;
+    
+            } else if ($jarak_delivery > 15) {
+                $order->ongkir = 25000;
+                $order->jarak_delivery = $request->jarak_delivery;
+    
+            }
+    
+            $subtotal = $order->ongkir;
+            $detailPemesanan = DetailPemesanan::where('id_pemesanan', $id)->get();
+            foreach ($detailPemesanan as $detail) {
+                $hargaProduk = Produk::find($detail->id_produk);
+                $hargaProduk = Hampers::find($detail->id_hampers);
+                $subtotal += $hargaProduk->harga * $detail->jumlah;
+            }
+    
+            foreach ($detailPemesanan as $detail) {
+                $detail->subtotal = $subtotal;
+                $detail->save();
+            }
+            $order->status_pesanan = 'dikonfirmasi admin';
+            $order->save();
+    
+            return response()->json([
+                'status' => true,
+                'message' => 'Jarak delivery added successfully',
+                'data' => $order
+            ], 200);
+        }catch(Excepetion $e){
             return response()->json([
                 'status' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 400);
+                'message' => $e->getMessage(),
+            ], 500);
         }
 
         $order = Pemesanan::find($id);

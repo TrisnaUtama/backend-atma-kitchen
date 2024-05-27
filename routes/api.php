@@ -225,7 +225,6 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('detailPemesanan')->group(f
     Route::post('/addPembayaran/{id}', 'App\Http\Controllers\DetailPemesananController@addPembayaran');
 });
 
-
 Route::prefix('presensi')->group(function () {
     Route::post('/add', 'App\Http\Controllers\PresensiController@addPresensi');
     Route::get('/getAllPresensi', 'App\Http\Controllers\PresensiController@getAllPresensi');
