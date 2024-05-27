@@ -13,8 +13,8 @@ class Customer extends Authenticatable
     use HasFactory, HasApiTokens;
 
     public $timestamps = false;
-    protected $table = 'customer'; 
-    protected $primaryKey = 'id'; 
+    protected $table = 'customer';
+    protected $primaryKey = 'id';
     protected $fillable = [
         'id_saldo',
         'nama',
@@ -27,7 +27,7 @@ class Customer extends Authenticatable
     ];
 
     public function saldo(){
-        return $this->belongsTo(Saldo::class, 'id_saldo', 'id_saldo');
+        return $this->belongsTo(Saldo::class, 'id_saldo', 'id');
     }
 }
 
