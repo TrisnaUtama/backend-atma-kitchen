@@ -14,6 +14,8 @@ Route::middleware(['auth:sanctum'])->prefix('user')->group(function () {
     Route::patch('update', 'App\Http\Controllers\AuthController@updateProfile');
 });
 
+Route::get('/getAllHampers', 'App\Http\Controllers\HampersController@getAllHampers');
+Route::get('/getAllProduk', 'App\Http\Controllers\ProdukController@getAllProduk');
 #routeProduk
 Route::middleware(['auth:sanctum', 'admin'])->prefix('produk')->group(function () {
     Route::get('/getAll', 'App\Http\Controllers\ProdukController@getAllProduk');
@@ -32,6 +34,11 @@ Route::middleware(['auth:sanctum', 'customer'])->prefix('pemesanan')->group(func
 
 Route::middleware(['auth:sanctum', 'mo'])->prefix('pemesanan-to-proses')->group(function () {
     Route::get('/', 'App\Http\Controllers\PemesananController@getPemesananToProses');
+
+    
+});
+Route::middleware(['auth:sanctum', 'customer'])->prefix('saldo')->group(function () {
+    Route::get('/{id}', 'App\Http\Controllers\SaldoController@getSaldoById');
 });
 
 // alamat

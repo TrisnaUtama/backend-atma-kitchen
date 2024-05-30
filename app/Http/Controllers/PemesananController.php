@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Models\Limit_Produk;
 use App\Models\Pesanan;
 use Illuminate\Http\Request;
 use App\Models\Pemesanan;
@@ -267,9 +269,15 @@ class PemesananController extends Controller
                 $details = DetailPemesanan::where('id_pemesanan', $order->id)->get();
                 foreach ($details as $detail) {
                     $product = Produk::find($detail->id_produk);
-                    if ($product) {
-                        $product->stok += $detail->jumlah;
-                        $product->save();
+                    $limit = Limit_Produk::find($detail->id_produk);
+                    if ($detail->status == 'Ready Stok') {
+                        if ($product) {
+                            $product->stok += $detail->jumlah;
+                            $product->save();
+                        }
+                    } else {
+                        $limit->limit += $detail->jumlah;
+                        $limit->save();
                     }
                 }
                 $jumlahSaldo = Saldo::where('id_customer', $order->id_customer)->first();
@@ -284,6 +292,7 @@ class PemesananController extends Controller
                 }
 
                 $order->uang_customer = 0;
+                $order->tip = 0;
             } else {
                 $order->status_pesanan = 'diterima';
                 $poinPesanan = $order->poin_pesanan;
