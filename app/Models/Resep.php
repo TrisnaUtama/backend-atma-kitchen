@@ -13,4 +13,9 @@ class Resep extends Model
     protected $fillable = [
         'nama_resep'
     ];
+
+    public function komposisi()
+    {
+        return $this->hasMany(Komposisi::class, 'id_resep', 'id');
+    }
 }

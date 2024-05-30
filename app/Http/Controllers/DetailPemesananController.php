@@ -153,8 +153,6 @@ class DetailPemesananController extends Controller
             $order->jarak_delivery = $request->jarak_delivery;
 
         }
-
-        // Hitung ulang subtotal dan update setiap detail pemesanan
         $subtotal = $order->ongkir;
         $detailPemesanan = DetailPemesanan::where('id_pemesanan', $id)->get();
         foreach ($detailPemesanan as $detail) {

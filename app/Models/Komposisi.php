@@ -21,10 +21,10 @@ class Komposisi extends Model
 
     public function resep()
     {
-        return $this->belongsTo(Resep::class, 'id_resep', 'id_resep');
+        return $this->belongsTo(Resep::class, 'id_resep', 'id');
     }
     public function bahanBaku()
     {
-        return $this->belongsTo(BahanBaku::class, 'id_bahan_baku', 'id_bahan_baku');
+        return $this->belongsTo(BahanBaku::class, 'id_bahan_baku', 'id');
     }
 }

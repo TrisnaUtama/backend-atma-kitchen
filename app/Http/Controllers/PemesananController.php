@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
-// use App\Models\Hampers;
 use App\Models\Pesanan;
 use Illuminate\Http\Request;
 use App\Models\Pemesanan;
@@ -18,6 +16,33 @@ use Exception;
 
 class PemesananController extends Controller
 {
+    public function getPemesananToProses(){
+        try{
+             $today = Carbon::today()->toDateString();
+             $pemesanan = Pemesanan::where('status_pesanan', 'diterima')
+             ->whereRaw('DATE(tanggal_pemesanan) <= ?', [$today])
+             ->get();
+            if($pemesanan->isEmpty()){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'there no data pemesanan to proses',
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'success retrieve data pemesana to proses',
+                'data' => $pemesanan
+            ], 200);
+        }catch(Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => 'Internal server error',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function addPemesanan(Request $req)
     {
         try {
@@ -99,8 +124,7 @@ class PemesananController extends Controller
                 $potonganPoin = $data['items'][0]['potongan_poin'];
             }
 
-            $status_pesanan = ($data['items'][0]['deliveryType'] === 'pickup') ? 'sudah di bayar' : 'dikonfirmasi admin';
-
+            $status_pesanan = ($data['items'][0]['deliveryType'] === 'pickup') ? 'menunggu pembayaran' : 'dikonfirmasi admin';
 
             $pemesanan = Pemesanan::create([
                 'no_nota' => $idPemesanan,
@@ -267,7 +291,6 @@ class PemesananController extends Controller
                 if ($poinCustomer) {
                     $poinCustomer->poin += $poinPesanan;
                     $poinCustomer->save();
-                    $order->status_pesanan = 'diproses';
                     $order->save();
 
                     return response()->json([
