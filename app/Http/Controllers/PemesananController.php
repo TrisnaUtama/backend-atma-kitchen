@@ -8,35 +8,212 @@ use App\Models\Pesanan;
 use Illuminate\Http\Request;
 use App\Models\Pemesanan;
 use App\Models\DetailPemesanan;
+use App\Models\Pencatatan_Bahan_Baku;
 use App\Models\Produk;
 use App\Models\Customer;
+use App\Models\BahanBaku;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Saldo;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Exception;
 
-class PemesananController extends Controller
-{
-    public function getPemesananToProses(){
-        try{
-             $today = Carbon::today()->toDateString();
-             $pemesanan = Pemesanan::where('status_pesanan', 'diterima')
-             ->whereRaw('DATE(tanggal_pemesanan) <= ?', [$today])
-             ->get();
-            if($pemesanan->isEmpty()){
+class PemesananController extends Controller{
+
+
+    public function processOrder(Request $request)
+    {
+        $orderIds = $request->input('selectedOrderIds');
+
+        if (empty($orderIds)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No orders selected.',
+            ], 400);
+        }
+
+        $totalRequiredQuantities = [];
+
+        foreach ($orderIds as $orderId) {
+            $order = Pemesanan::find($orderId);
+
+            if (!$order) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'there no data pemesanan to proses',
+                    'message' => 'Order not found.',
                 ], 404);
             }
 
+            $orderDetails = $order->detailPemesanan;
+
+            foreach ($orderDetails as $orderDetail) {
+                $product = $orderDetail->produk;
+                $komposisi = $product->komposisi;
+
+                foreach ($komposisi as $ingredient) {
+                    $requiredQuantity = $orderDetail->jumlah * $ingredient->jumlah;
+                    $ingredientId = $ingredient->id_bahan_baku;
+
+                    if (isset($totalRequiredQuantities[$ingredientId])) {
+                        $totalRequiredQuantities[$ingredientId] += $requiredQuantity;
+                    } else {
+                        $totalRequiredQuantities[$ingredientId] = $requiredQuantity;
+                    }
+                }
+            }
+        }
+
+        foreach ($totalRequiredQuantities as $ingredientId => $totalRequiredQuantity) {
+            $bahanBaku = BahanBaku::find($ingredientId);
+
+            if (!$bahanBaku || $bahanBaku->stok < $totalRequiredQuantity) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Insufficient stock for one or more ingredients.',
+                    'ingredient' => $bahanBaku ? $bahanBaku->nama_bahan_baku : 'Unknown Ingredient',
+                    'required_quantity' => $totalRequiredQuantity,
+                    'available_stock' => $bahanBaku ? $bahanBaku->stok : 0,
+                ], 400);
+            }
+        }
+
+        foreach ($orderIds as $orderId) {
+            $order = Pemesanan::find($orderId);
+            $orderDetails = $order->detailPemesanan;
+
+            foreach ($orderDetails as $orderDetail) {
+                $product = $orderDetail->produk;
+                $komposisi = $product->komposisi;
+
+                foreach ($komposisi as $ingredient) {
+                    $requiredQuantity = $orderDetail->jumlah * $ingredient->jumlah;
+                    $bahanBaku = BahanBaku::find($ingredient->id_bahan_baku);
+
+                    $bahanBaku->stok -= $requiredQuantity;
+                    $bahanBaku->save();
+
+                    $pencatatan = Pencatatan_Bahan_Baku::where('id_bahan_baku', $ingredient->id_bahan_baku)->first();
+
+                    if ($pencatatan) {
+                        $pencatatan->jumlah_terpakai += $requiredQuantity;
+                        $pencatatan->save();
+                    } else {
+                        Pencatatan_Bahan_Baku::create([
+                            'id_bahan_baku' => $ingredient->id_bahan_baku,
+                            'jumlah_terpakai' => $requiredQuantity
+                        ]);
+                    }
+                }
+            }
+
+            $order->status_pesanan = 'diproses';
+            $order->save();
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Orders processed successfully.',
+        ]);
+    }
+
+    public function getLaporanProduk(Request $request){
+        try {
+            $userInputDate = $request->input('userInputDate'); 
+            if (!$userInputDate) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User input date is missing',
+                ], 400);
+            }
+    
+            $formattedDate = Carbon::createFromFormat('Y-m-d', $userInputDate)->format('Y-m');
+            $laporan = Pemesanan::with('detailPemesanan.produk', 'detailPemesanan.hampers')
+                ->whereIn('status_pesanan', ['diproses', 'siap di-pickup', 'sudah di-pickup', 'sedang dikirim', 'selesai'])
+                ->whereRaw("DATE_FORMAT(tanggal_diambil, '%Y-%m') = ?", [$formattedDate])
+                ->get();
+    
+            $report = [];
+    
+            foreach ($laporan as $pemesanan) {
+                foreach ($pemesanan->detailPemesanan as $detail) {
+                    if ($detail->id_produk) {
+                        $produk = $detail->produk;
+                        $productKey = $produk->id;
+                        if (array_key_exists($productKey, $report)) {
+                            $report[$productKey]['quantity'] += $detail->jumlah;
+                            $report[$productKey]['subtotal'] += ($detail->jumlah * $produk->harga);
+                        } else {
+                            $report[$productKey] = [
+                                'name' => $produk->nama_produk,
+                                'price' => $produk->harga,
+                                'quantity' => $detail->jumlah,
+                                'subtotal' => $detail->jumlah * $produk->harga,
+                                'type' => 'product',
+                            ];
+                        }
+                    }
+
+                    if ($detail->id_hampers) {
+                        $hampers = $detail->hampers;
+                        $hampersKey = 'hampers_'. $hampers->id;
+                        if (array_key_exists($hampersKey, $report)) {
+                            $report[$hampersKey]['quantity'] += $detail->jumlah;
+                            $report[$hampersKey]['subtotal'] += ($detail->jumlah * $hampers->harga);
+                        } else {
+                            $report[$hampersKey] = [
+                                'name' => $hampers->nama_hampers,
+                                'price' => $hampers->harga,
+                                'quantity' => $detail->jumlah,
+                                'subtotal' => $detail->jumlah * $hampers->harga,
+                                'type' => 'hampers',
+                            ];
+                        }
+                    }
+                }
+            }
+    
+            $report = array_values($report);
+    
             return response()->json([
                 'status' => true,
-                'message' => 'success retrieve data pemesana to proses',
+                'data' => $report,
+            ], 200);
+    
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Internal server error',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    
+    
+    
+
+    public function getPemesananToProses(){
+        try {
+
+            $today = Carbon::today()->toDateString();
+            $pemesanan = Pemesanan::with('detailPemesanan')
+                ->where('status_pesanan', 'diterima')
+                ->whereRaw('DATE_SUB(DATE(tanggal_diambil), INTERVAL 1 DAY) = ?', [$today])
+                ->get();
+                
+    
+            if ($pemesanan->isEmpty()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'There is no data pemesanan to process',
+                ], 404);
+            }
+    
+            return response()->json([
+                'status' => true,
+                'message' => 'Successfully retrieved data pemesanan to process',
                 'data' => $pemesanan
             ], 200);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => 'Internal server error',
@@ -295,6 +472,7 @@ class PemesananController extends Controller
                 $order->tip = 0;
             } else {
                 $order->status_pesanan = 'diterima';
+                $order->tanggal_diterima = Carbon::now();
                 $poinPesanan = $order->poin_pesanan;
                 $poinCustomer = Customer::where('id', $order->id_customer)->first();
                 if ($poinCustomer) {
