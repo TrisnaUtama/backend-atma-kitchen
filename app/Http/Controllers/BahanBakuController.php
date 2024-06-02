@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\BahanBaku;
+use App\Models\Pemesanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class BahanBakuController extends Controller
 {
-
     public function getAllBahanBaku()
     {
         try{

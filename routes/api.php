@@ -32,9 +32,23 @@ Route::middleware(['auth:sanctum', 'customer'])->prefix('pemesanan')->group(func
     Route::get('/getTotal/{id}', 'App\Http\Controllers\PemesananController@getTotalPemesananById');
 });
 
+Route::middleware(['auth:sanctum', 'mo'])->prefix('pemesanan-to-proses')->group(function () {
+    Route::get('/', 'App\Http\Controllers\PemesananController@getPemesananToProses');
+    Route::post('/process-orders', 'App\Http\Controllers\PemesananController@processOrder');
+});
+
+Route::middleware(['auth:sanctum', 'mo'])->prefix('bahan-baku-usage')->group(function () {
+    Route::get('/', 'App\Http\Controllers\PencatatanBahanBakuController@getBahanBakuUsage');
+    Route::post('/', 'App\Http\Controllers\PencatatanBahanBakuController@addBahanBakuToPencatatan');
+});
+
+Route::middleware(['auth:sanctum', 'report'])->prefix('laporan')->group(function () {
+    Route::get('/', 'App\Http\Controllers\PemesananController@getLaporanProduk');
+});
+
+
 Route::middleware(['auth:sanctum', 'customer'])->prefix('saldo')->group(function () {
     Route::get('/{id}', 'App\Http\Controllers\SaldoController@getSaldoById');
-
 });
 
 // alamat
@@ -80,7 +94,6 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('resep')->group(function ()
     Route::patch('/{id}', 'App\Http\Controllers\ResepController@updateResep');
     Route::delete('/{id}', 'App\Http\Controllers\ResepController@deleteResepById');
     Route::get('/{id}', 'App\Http\Controllers\ResepController@getResepById');
-
 });
 
 #routepegawai
@@ -93,18 +106,20 @@ Route::middleware(['auth:sanctum', 'mo'])->prefix('pegawai')->group(function () 
     Route::get('/{id}', 'App\Http\Controllers\PegawaiController@getPegawaiById');
 });
 
+#laporan pesanan
+
+
 #konfrimasiPesananMo
 Route::middleware(['auth:sanctum', 'mo'])->prefix('konfirmasi')->group(function () {
     Route::get('/getPemesanan', 'App\Http\Controllers\PemesananController@getconfirmPesanan');
     Route::post('/confirmPesanan/{id}', 'App\Http\Controllers\PemesananController@confirmPesanan');
-
 });
 
+#Owner
 Route::middleware(['auth:sanctum', 'owner'])->prefix('pegawaiOwner')->group(function () {
     Route::get('/getAll', 'App\Http\Controllers\PegawaiController@tampilkanPegawai');
     Route::get('/{id}', 'App\Http\Controllers\PegawaiController@getPegawaiById');
     Route::patch('/{id}', 'App\Http\Controllers\GajiBonusController@ubahGaji');
-
 });
 
 //alamat
@@ -167,6 +182,12 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('bahanbaku')->group(functio
 Route::middleware(['auth:sanctum', 'mo'])->prefix('bahanbakuMO')->group(function () {
     Route::get('/getAllBahanBaku', 'App\Http\Controllers\BahanBakuController@getAllBahanBaku');
 });
+
+Route::middleware(['auth:sanctum', 'report'])->prefix('reportBahanBaku')->group(function () {
+    Route::get('/getAllBahanBaku', 'App\Http\Controllers\BahanBakuController@getAllBahanBaku');
+});
+
+
 
 #routeLimit
 Route::middleware(['auth:sanctum', 'admin'])->prefix('limit')->group(function () {

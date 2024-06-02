@@ -44,5 +44,10 @@ class Produk extends Model
     {
         return $this->hasMany(Limit_Produk::class, 'id_produk', 'id');
     }
+
+    public function komposisi()
+    {
+        return $this->hasManyThrough(Komposisi::class, Resep::class, 'id', 'id_resep', 'id_resep', 'id');
+    }
 }
 
