@@ -28,7 +28,7 @@ class Hampers extends Model
     // Hampers.php
     public function komposisi()
     {
-        return $this->hasMany(Komposisi::class, 'id_hampers', 'id');
+        return $this->hasManyThrough(Komposisi::class, Resep::class, 'id', 'id_resep', 'id_resep', 'id');
     }
 
 }

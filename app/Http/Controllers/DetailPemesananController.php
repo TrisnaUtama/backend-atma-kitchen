@@ -381,7 +381,7 @@ class DetailPemesananController extends Controller
             // Find the order
             $order = Pemesanan::where('id', $id)
                 ->where('id_customer', $customerId)
-                ->where('status_pesanan', 'sedang dikirim')
+                ->whereIn('status_pesanan', ['sedang dikirim', 'siap di-pickup'])
                 ->first();
 
             if (!$order) {

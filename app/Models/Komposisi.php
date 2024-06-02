@@ -27,4 +27,5 @@ class Komposisi extends Model
     {
         return $this->belongsTo(BahanBaku::class, 'id_bahan_baku', 'id');
     }
+    
 }
