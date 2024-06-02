@@ -32,10 +32,12 @@ class detailPemesanan extends Model
     {
         return $this->belongsTo(Pesanan::class, 'id_pemesanan', 'id');
     }
+
     public function Pemesanan()
     {
         return $this->belongsTo(Pemesanan::class, 'id_pemesanan', 'id');
     }
+
 
 
 }

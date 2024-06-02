@@ -24,11 +24,11 @@ class Detail_Hampers extends Model
 
     public function bahan_baku()
     {
-        return $this->belongsTo(BahanBaku::class, 'id_bahan_baku', 'id_bahan_baku');
+        return $this->belongsTo(BahanBaku::class, 'id_bahan_baku', 'id');
     }
 
     public function hampers()
     {
-        return $this->belongsTo(Hampers::class, 'id_hampers', 'id_hampers');
+        return $this->belongsTo(Hampers::class, 'id_hampers', 'id');
     }
 }
