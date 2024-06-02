@@ -34,9 +34,19 @@ Route::middleware(['auth:sanctum', 'customer'])->prefix('pemesanan')->group(func
 
 Route::middleware(['auth:sanctum', 'mo'])->prefix('pemesanan-to-proses')->group(function () {
     Route::get('/', 'App\Http\Controllers\PemesananController@getPemesananToProses');
-
-    
+    Route::post('/process-orders', 'App\Http\Controllers\PemesananController@processOrder');
 });
+
+Route::middleware(['auth:sanctum', 'mo'])->prefix('bahan-baku-usage')->group(function () {
+    Route::get('/', 'App\Http\Controllers\PencatatanBahanBakuController@getBahanBakuUsage');
+    Route::post('/', 'App\Http\Controllers\PencatatanBahanBakuController@addBahanBakuToPencatatan');
+});
+
+Route::middleware(['auth:sanctum', 'report'])->prefix('laporan')->group(function () {
+    Route::get('/', 'App\Http\Controllers\PemesananController@getLaporanProduk');
+});
+
+
 Route::middleware(['auth:sanctum', 'customer'])->prefix('saldo')->group(function () {
     Route::get('/{id}', 'App\Http\Controllers\SaldoController@getSaldoById');
 });
@@ -97,9 +107,7 @@ Route::middleware(['auth:sanctum', 'mo'])->prefix('pegawai')->group(function () 
 });
 
 #laporan pesanan
-Route::middleware(['auth:sanctum', 'mo'])->prefix('bahan-baku-usage')->group(function () {
-    Route::get('/', 'App\Http\Controllers\BahanBakuController@getBahanBakuUsage');
-});
+
 
 #konfrimasiPesananMo
 Route::middleware(['auth:sanctum', 'mo'])->prefix('konfirmasi')->group(function () {
@@ -174,6 +182,12 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('bahanbaku')->group(functio
 Route::middleware(['auth:sanctum', 'mo'])->prefix('bahanbakuMO')->group(function () {
     Route::get('/getAllBahanBaku', 'App\Http\Controllers\BahanBakuController@getAllBahanBaku');
 });
+
+Route::middleware(['auth:sanctum', 'report'])->prefix('reportBahanBaku')->group(function () {
+    Route::get('/getAllBahanBaku', 'App\Http\Controllers\BahanBakuController@getAllBahanBaku');
+});
+
+
 
 #routeLimit
 Route::middleware(['auth:sanctum', 'admin'])->prefix('limit')->group(function () {
