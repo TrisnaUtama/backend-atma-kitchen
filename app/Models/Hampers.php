@@ -10,8 +10,8 @@ class Hampers extends Model
     use HasFactory;
 
     public $timestamps = false;
-    protected $table = 'hampers'; 
-    protected $primaryKey = 'id'; 
+    protected $table = 'hampers';
+    protected $primaryKey = 'id';
     protected $fillable = [
         'gambar',
         'harga',
@@ -24,4 +24,11 @@ class Hampers extends Model
     {
         return $this->hasMany(Detail_Hampers::class, 'id_hampers');
     }
+
+    // Hampers.php
+    public function komposisi()
+    {
+        return $this->hasMany(Komposisi::class, 'id_hampers', 'id');
+    }
+
 }

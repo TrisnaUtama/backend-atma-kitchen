@@ -241,10 +241,29 @@ Route::middleware(['auth:sanctum', 'customer'])->prefix('detailPemesanan')->grou
 Route::middleware(['auth:sanctum', 'admin'])->prefix('detailPemesanan')->group(function () {
     Route::get('/getJarak', 'App\Http\Controllers\DetailPemesananController@getAllJarakNull');
     Route::get('/getStatus', 'App\Http\Controllers\DetailPemesananController@getStatus');
+    Route::get('/getStatusDiproses', 'App\Http\Controllers\DetailPemesananController@getStatusDiproses');
     Route::get('/getStatusPesanan', 'App\Http\Controllers\DetailPemesananController@getStatusPesanan');
     Route::post('/addJarakDelivery/{id}', 'App\Http\Controllers\DetailPemesananController@addJarakDelivery');
     Route::post('/addPembayaran/{id}', 'App\Http\Controllers\DetailPemesananController@addPembayaran');
+    Route::post('/updateStatus/{id}', 'App\Http\Controllers\DetailPemesananController@updateStatus');
+    Route::get('/getTelatBayar', 'App\Http\Controllers\DetailPemesananController@getTelatBayar');
+    Route::post('/cancelLatePaymentOrder/{id}', 'App\Http\Controllers\DetailPemesananController@cancelLatePaymentOrder'); // New route
 });
+
+Route::middleware(['auth:sanctum', 'report'])->prefix('detailPemesanan')->group(
+    function () {
+        Route::get('/getLaporanProdukBulanan', 'App\Http\Controllers\DetailPemesananController@getLaporanProdukBulanan');
+        Route::get('/getLaporanBahanBakuPeriode', 'App\Http\Controllers\DetailPemesananController@getLaporanBahanBakuPeriode');
+    }
+);
+
+Route::middleware(['auth:sanctum', 'customer'])->prefix('detailPemesanan')->group(function () {
+    Route::get('/getShippedOrPickedUpOrders', 'App\Http\Controllers\DetailPemesananController@getShippedOrPickedUpOrders');
+    Route::get('/getShippedOrPickedUpOrdersByCustomer', 'App\Http\Controllers\DetailPemesananController@getShippedOrPickedUpOrdersByCustomer');
+    Route::post('/updateStatusToSelesai/{id}', 'App\Http\Controllers\DetailPemesananController@updateStatusToSelesai'); // New route
+});
+
+
 
 Route::prefix('presensi')->group(function () {
     Route::post('/add', 'App\Http\Controllers\PresensiController@addPresensi');

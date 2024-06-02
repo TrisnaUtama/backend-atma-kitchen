@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Produk extends Model
 {
     use HasFactory;
-    
+
     public $timestamps = false;
-    protected $table = 'produk'; 
-    protected $primaryKey = 'id'; 
+    protected $table = 'produk';
+    protected $primaryKey = 'id';
     protected $fillable = [
         'id_penitip',
         'id_resep',
@@ -25,15 +25,23 @@ class Produk extends Model
         'status',
     ];
 
-    public function penitip(){
+    public function penitip()
+    {
         return $this->belongsTo(Penitip::class, 'id_penitip', 'id');
     }
 
-    public function resep(){
+    public function resep()
+    {
         return $this->belongsTo(Resep::class, 'id_resep', 'id');
     }
 
-    public function limit(){
+    public function komposisi()
+    {
+        return $this->hasManyThrough(Komposisi::class, Resep::class, 'id', 'id_resep', 'id_resep', 'id');
+    }
+
+    public function limit()
+    {
         return $this->hasMany(Limit_Produk::class, 'id_produk', 'id');
     }
 
