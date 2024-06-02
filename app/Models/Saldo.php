@@ -13,13 +13,9 @@ class Saldo extends Model
     protected $table = 'saldo'; 
     protected $primaryKey = 'id'; 
     protected $fillable = [
-        'id_customer',
         'jumlah_saldo',
         'tanggal_masuk',
         'tanggal_keluar',
     ];
 
-    public function Customer(){
-        return $this->belongsTo(Customer::class,'id_customer', 'id');
-    }
 }

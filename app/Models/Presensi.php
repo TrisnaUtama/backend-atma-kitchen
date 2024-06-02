@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Presensi extends Model
 {
+    use HasFactory;
+
     public $timestamps = false;
     protected $table = 'presensi';
     protected $primaryKey = 'id';
@@ -16,10 +18,10 @@ class Presensi extends Model
         'status',
     ];
 
+    // Definisi relasi dengan model Pegawai
     public function pegawai()
     {
-        return $this->belongsTo(Pegawai::class, 'id_pegawai', 'id_pegawai');
+        // Asumsikan bahwa kunci asing pada model Presensi adalah id_pegawai
+        return $this->belongsTo(Pegawai::class, 'id_pegawai', 'id');
     }
-
-    use HasFactory;
 }

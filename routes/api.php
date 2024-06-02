@@ -168,6 +168,18 @@ Route::middleware(['auth:sanctum', 'mo'])->prefix('bahanbakuMO')->group(function
     Route::get('/getAllBahanBaku', 'App\Http\Controllers\BahanBakuController@getAllBahanBaku');
 });
 
+Route::middleware(['auth:sanctum', 'mo'])->prefix('penitip')->group(function () {
+    Route::get('/laporanPenitip/{id}', 'App\Http\Controllers\LaporanPenitipController@showPenitipData');
+    Route::get('/getAllPenitip', 'App\Http\Controllers\LaporanPenitipController@getAllPenitip');
+
+});
+Route::middleware(['auth:sanctum', 'mo'])->prefix('laporan')->group(function () {
+    Route::get('/pemasukanPengeluaran', 'App\Http\Controllers\LaporanPemasukandanPengeluaran@laporanBulanan');
+});
+Route::middleware(['auth:sanctum', 'mo'])->prefix('laporanPegawai')->group(function () {
+    Route::get('/presensi', 'App\Http\Controllers\LaporanPresensiController@laporanPegawai');
+});
+
 #routeLimit
 Route::middleware(['auth:sanctum', 'admin'])->prefix('limit')->group(function () {
     Route::get('/getAll', 'App\Http\Controllers\Limit_ProdukController@getLimitAllProduk');
@@ -184,6 +196,19 @@ Route::middleware(['auth:sanctum', 'customer'])->prefix('limit-customer')->group
 
 Route::prefix('limit')->group(function () {
     Route::get('/getToday', 'App\Http\Controllers\Limit_ProdukController@getLimitProdukToday');
+});
+
+//SaldoCustomer
+Route::middleware(['auth:sanctum','customer'])->prefix('saldoCustomer')->group(function(){
+    Route::get('/getSaldo/{id}', 'App\Http\Controllers\SaldoController@getSaldoById');
+    Route::post('/tarikSaldo', 'App\Http\Controllers\SaldoController@penarikanSaldo');
+    Route::get('/history', 'App\Http\Controllers\SaldoController@historySaldo');
+});
+
+//SaldoAdmin
+Route::middleware(['auth:sanctum','admin'])->prefix('saldoAdmin')->group(function(){
+    Route::get('/listSaldo', 'App\Http\Controllers\DetailSaldoController@listPenarikanSaldo');
+    Route::post('/confirmSaldo/{id}', 'App\Http\Controllers\DetailSaldoController@confirmSaldo');
 });
 
 
