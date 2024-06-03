@@ -13,49 +13,51 @@ use App\Models\Penitip;
 class LaporanPenitipController extends Controller
 {
     public function showPenitipData($penitipId)
-    {
-        $result = Pemesanan::with(['detailPemesanan.produk.penitip'])
-            ->where('status_pesanan', 'selesai')
-            ->get()
-            ->flatMap(function ($pemesanan) use ($penitipId) {
-                return $pemesanan->detailPemesanan->filter(function ($detail) use ($penitipId) {
-                    return $detail->produk->penitip->id == $penitipId;
-                })->map(function ($detail) {
-                    $produk = $detail->produk;
-                    $penitip = $produk->penitip;
-                    $total = $produk->harga * $detail->jumlah;
-                    $komisi = $total * 0.20;
-                    $diterima = $total - $komisi;
-                    
-                    return [
-                        'nama_produk' => $produk->nama_produk,
-                        'banyaknya_terjual' => $detail->jumlah,
-                        'harga' => $produk->harga,
-                        'total' => $total,
-                        'komisi' => $komisi,
-                        'total_diterima' => $diterima,
-                        'penitip_id' => $penitip->id ?? null,
-                        'penitip_nama' => $penitip->nama ?? null,
-                        
-                    ];
-                });
+{
+    $result = Pemesanan::with(['detailPemesanan.produk.penitip'])
+        ->where('status_pesanan', 'selesai')
+        ->get()
+        ->map(function ($pemesanan) use ($penitipId) {
+            return $pemesanan->detailPemesanan->filter(function ($detail) use ($penitipId) {
+                return $detail->produk->penitip->id == $penitipId;
+            })->map(function ($detail) {
+                $produk = $detail->produk;
+                $penitip = $produk->penitip;
+                $total = $produk->harga * $detail->jumlah;
+                $komisi = $total * 0.20;
+                $diterima = $total - $komisi;
+
+                return [
+                    'nama_produk' => $produk->nama_produk,
+                    'banyaknya_terjual' => $detail->jumlah,
+                    'harga' => $produk->harga,
+                    'total' => $total,
+                    'komisi' => $komisi,
+                    'total_diterima' => $diterima,
+                    'penitip_id' => $penitip->id ?? null,
+                    'penitip_nama' => $penitip->nama ?? null,
+                ];
             });
-            $totalDiterima = $result->sum('total_diterima');
+        })
+        ->flatten(1);
 
-            $penitip = Penitip::find($penitipId);
+    $totalDiterima = $result->sum('total_diterima');
 
-            return response()->json([
-                'data' => $result,
-                'total_uang' => $totalDiterima,
-                'penitip' => $penitip,
-            ]);
-    }
+    $penitip = Penitip::find($penitipId);
+
+    return response()->json([
+        'data' => $result,
+        'total_uang' => $totalDiterima,
+        'penitip' => $penitip,
+    ]);
+}
+
 
     public function getAllPenitip()
     {
-        try{
+        try {
             $penitip = Penitip::all();
-            if($penitip->isEmpty()){
+            if ($penitip->isEmpty()) {
                 return response()->json([
                     'status' => false,
                     'message' => 'No Penitip Data found ',
@@ -66,7 +68,7 @@ class LaporanPenitipController extends Controller
                 'message' => 'Successfully retrieved penitip',
                 'data' => $penitip
             ], 200);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),

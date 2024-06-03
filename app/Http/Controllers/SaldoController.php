@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Customer;
 use App\Models\detailSaldo;
 use Illuminate\Http\Request;
@@ -11,43 +12,43 @@ use Exception;
 class SaldoController extends Controller
 {
     public function getSaldoById($id)
-{
-    try {
-        // Mengambil saldo berdasarkan ID customer yang diberikan
-        $saldo = Customer::with([
-            'saldo' => function ($query) {
-                $query->select('id', 'jumlah_saldo');
-            }
-        ])
-        ->where('id', $id) // Menambahkan filter berdasarkan ID customer
-        ->first();
+    {
+        try {
 
-        if ($saldo) {
-            return response()->json([
-                'status' => true,
-                'data' => $saldo,
-                'message' => "Successfully retrieved saldo for customer ID $id"
-            ]);
-        } else {
+            $saldo = Customer::with([
+                'saldo' => function ($query) {
+                    $query->select('id', 'jumlah_saldo');
+                }
+            ])
+                ->where('id', $id)
+                ->first();
+
+            if ($saldo) {
+                return response()->json([
+                    'status' => true,
+                    'data' => $saldo,
+                    'message' => "Successfully retrieved saldo for customer ID $id"
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Customer ID $id not found"
+                ], 404);
+            }
+        } catch (Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => "Customer ID $id not found"
-            ], 404);
+                'message' => 'Internal server error',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-    } catch (Exception $e) {
-        return response()->json([
-            'status' => false,
-            'message' => 'Internal server error',
-            'error' => $e->getMessage(),
-        ], 500);
     }
-}
 
 
 
     public function penarikanSaldo(Request $request)
     {
-        try{
+        try {
             $customer = Auth::user();
 
             $request->validate([
@@ -56,23 +57,23 @@ class SaldoController extends Controller
                 'jumlah_saldo.required' => 'Jumlah saldo wajib diisi.',
                 'jumlah_saldo.numeric' => 'Jumlah saldo harus berupa angka.'
             ]);
-            
 
-            if($customer->saldo->jumlah_saldo < $request->jumlah_saldo){
+
+            if ($customer->saldo->jumlah_saldo < $request->jumlah_saldo) {
                 return response()->json([
                     'status' => false,
                     'message' => 'jumlah saldo tidak boleh kurang',
-                ],400);
+                ], 400);
             }
 
             $detailSaldo = detailSaldo::create([
-                'id_customer'=> $customer->id,
+                'id_customer' => $customer->id,
                 'jumlah_saldo' => $request->jumlah_saldo,
                 'tanggal_penarikan' => now(),
                 'status' => 'pending'
             ]);
             return response()->json(['message' => 'Penarikan saldo berhasil diajukan', 'data' => $detailSaldo], 201);
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => 'Internal server error',
@@ -83,11 +84,11 @@ class SaldoController extends Controller
 
     public function historySaldo()
     {
-        
+
         $customerId = Auth::id();
         $history = detailSaldo::where('id_customer', $customerId)
-                    ->where('status', 'confirmed')
-                    ->get();
+            ->where('status', 'confirmed')
+            ->get();
 
         if ($history->isEmpty()) {
             return response()->json([
