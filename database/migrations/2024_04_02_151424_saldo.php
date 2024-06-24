@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('saldo', function (Blueprint $table) {
             $table->id();
+            $table->integer('id_customer')->nullable();
             $table->double('jumlah_saldo')->nullable();
             $table->string('tanggal_masuk')->nullable();
             $table->string('tanggal_keluar')->nullable();

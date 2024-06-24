@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('pegawai', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_role')->constrained('role')->onDelete('cascade');
+            $table->foreignId('id_role')->constrained('role');
             $table->string('nama');
+            $table->string('email')->unique();
+            $table->string('password');
             $table->string('alamat');
             $table->string('no_telpn');
             $table->date('tanggal_lahir');

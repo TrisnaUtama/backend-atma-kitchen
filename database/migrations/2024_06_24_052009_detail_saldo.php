@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('presensi', function (Blueprint $table) {
+        Schema::create('detail_saldo', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_pegawai')->constrained('pegawai');
-            $table->timestamp('tanggal_presensi');
-            $table->enum('status_presensi', array('hadir', 'tidak hadir'))->default('tidak hadir');
+            $table->foreignId('id_customer')->constrained('customer');
+            $table->double('jumlah_saldo');
+            $table->date('tanggal_penarikan');
+            $table->date('tanggal_konfirmasi');
+            $table->string('status');
         });
     }
 
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('presensi');
+        Schema::dropIfExists('detail_saldo');
     }
 };
